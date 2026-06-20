@@ -1,63 +1,72 @@
 import Image from "next/image";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+const features = [
+  {
+    title: "PDF Summary",
+    description:
+      "Ubah materi kuliah panjang menjadi rangkuman yang lebih singkat, jelas, dan mudah dipahami.",
+  },
+  {
+    title: "Flashcard Generator",
+    description:
+      "Buat kartu tanya-jawab otomatis untuk membantu mengingat konsep penting dari materi.",
+  },
+  {
+    title: "Quiz Practice",
+    description:
+      "Latihan soal pilihan ganda otomatis berdasarkan isi PDF yang kamu upload.",
+  },
+];
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <section className="mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-6 text-center">
-        <p className="mb-4 rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300">
+    <main className="min-h-screen bg-background text-foreground">
+      <section className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 text-center">
+        <Badge variant="outline" className="mb-6">
           AI Learning Assistant for Students
-        </p>
+        </Badge>
 
-        <h1 className="text-5xl font-bold tracking-tight md:text-7xl">
+        <h1 className="max-w-4xl text-5xl font-bold tracking-tight md:text-7xl">
           SINAUWU
         </h1>
 
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-          Upload materi PDF kuliahmu, lalu ubah menjadi rangkuman,
-          flashcard, dan kuis latihan dengan bantuan AI.
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
+          Upload PDF materi kuliahmu, lalu ubah menjadi rangkuman, flashcard,
+          dan kuis latihan dengan bantuan AI.
         </p>
 
-        <div className="mt-10 flex gap-4">
-          <a
-            href="/dashboard"
-            className="rounded-xl bg-white px-6 py-3 font-semibold text-slate-950 transition hover:bg-slate-200"
-          >
-            Mulai Belajar
-          </a>
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <Button asChild size="lg">
+            <a href="/dashboard">Mulai Belajar</a>
+          </Button>
 
-          <a
-            href="#features"
-            className="rounded-xl border border-slate-700 px-6 py-3 font-semibold text-white transition hover:bg-slate-900"
-          >
-            Lihat Fitur
-          </a>
+          <Button asChild size="lg" variant="outline">
+            <a href="#features">Lihat Fitur</a>
+          </Button>
         </div>
       </section>
 
-      <section
-        id="features"
-        className="mx-auto grid max-w-5xl gap-6 px-6 pb-24 md:grid-cols-3"
-      >
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xl font-semibold">PDF Summary</h2>
-          <p className="mt-3 text-slate-400">
-            Materi panjang diringkas menjadi poin-poin yang lebih mudah
-            dipahami.
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xl font-semibold">Flashcard</h2>
-          <p className="mt-3 text-slate-400">
-            Konsep penting diubah menjadi kartu tanya-jawab untuk latihan cepat.
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xl font-semibold">Quiz Generator</h2>
-          <p className="mt-3 text-slate-400">
-            Sistem membuat soal latihan otomatis berdasarkan isi materi.
-          </p>
+      <section id="features" className="mx-auto max-w-6xl px-6 pb-24">
+        <div className="grid gap-6 md:grid-cols-3">
+          {features.map((feature) => (
+            <Card key={feature.title}>
+              <CardHeader>
+                <CardTitle>{feature.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
     </main>
