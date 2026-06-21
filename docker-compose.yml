@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: sinauwu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sinauwu
+      POSTGRES_PASSWORD: sinauwu123
+      POSTGRES_DB: sinauwu_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - sinauwu_pgdata:/var/lib/postgresql/data
+
+volumes:
+  sinauwu_pgdata:
