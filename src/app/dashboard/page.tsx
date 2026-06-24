@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +52,9 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <Button>Upload PDF</Button>
+          <Button asChild>
+            <Link href="/dashboard/upload">Upload PDF</Link>
+          </Button>
         </div>
 
         <section className="mt-8 grid gap-6 md:grid-cols-3">
