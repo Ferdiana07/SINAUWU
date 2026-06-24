@@ -51,10 +51,20 @@ export default async function DashboardPage() {
               Kelola materi kuliah, rangkuman, flashcard, dan quiz kamu di sini.
             </p>
           </div>
+          
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/dashboard/documents">
+                Documents
+              </Link>
+            </Button>
 
-          <Button asChild>
-            <Link href="/dashboard/upload">Upload PDF</Link>
-          </Button>
+            <Button asChild>
+              <Link href="/dashboard/upload">
+                Upload PDF
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <section className="mt-8 grid gap-6 md:grid-cols-3">
@@ -93,7 +103,14 @@ export default async function DashboardPage() {
                       key={document.id}
                       className="rounded-xl border p-4 transition hover:bg-muted/50"
                     >
-                      <h3 className="font-semibold">{document.title}</h3>
+                      <h3 className="font-semibold">
+                        <Link
+                          href={`/dashboard/documents/${document.id}`}
+                          className="hover:underline"
+                        >
+                          {document.title}
+                        </Link>
+                      </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         {document.fileName}
                       </p>
