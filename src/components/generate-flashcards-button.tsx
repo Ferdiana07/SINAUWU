@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface Props {
   documentId: string;
@@ -9,6 +11,7 @@ interface Props {
 export default function GenerateFlashcardsButton({
   documentId,
 }: Props) {
+  const router = useRouter();
   const [loading, setLoading] =
     useState(false);
 
@@ -36,6 +39,7 @@ export default function GenerateFlashcardsButton({
       console.log(data);
 
       if (data.success) {
+        router.refresh();
         alert(
           `Flashcards berhasil dibuat! Jumlah: ${data.count}`
         );
@@ -56,14 +60,14 @@ export default function GenerateFlashcardsButton({
   }
 
   return (
-    <button
+    <Button
+      variant="secondary"
       onClick={handleGenerate}
       disabled={loading}
-      className="rounded bg-green-600 px-3 py-2 text-white"
     >
       {loading
         ? "Generating..."
         : "Generate Flashcards"}
-    </button>
+    </Button>
   );
 }

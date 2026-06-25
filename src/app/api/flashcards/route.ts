@@ -46,16 +46,25 @@ export async function POST(req: Request) {
       );
     }
 
+    const existingFlashcards =
+      await prisma.flashcard.findFirst({
+        where: {
+          documentId,
+        },
+      });
+
+    if (existingFlashcards) {
+      return Response.json({
+        success: true,
+        message:
+          "Flashcards already exist",
+      });
+    }
+
     const flashcards =
       await generateFlashcards(
         document.rawText
       );
-
-    await prisma.flashcard.deleteMany({
-      where: {
-        documentId,
-      },
-    });
 
     await prisma.flashcard.createMany({
       data: flashcards.map((card) => ({

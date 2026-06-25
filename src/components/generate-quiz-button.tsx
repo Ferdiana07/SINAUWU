@@ -8,41 +8,44 @@ interface Props {
   documentId: string;
 }
 
-export default function GenerateSummaryButton({
+export default function GenerateQuizButton({
   documentId,
 }: Props) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   async function handleGenerate() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "/api/summary",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            documentId,
-          }),
-        }
-      );
+      const response =
+        await fetch(
+          "/api/quizzes",
+          {
+            method: "POST",
 
-      const data =
-        await response.json();
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
 
-      console.log(data);
+            body: JSON.stringify({
+              documentId,
+            }),
+          }
+        );
 
-      alert("Summary berhasil dibuat");
+      if (!response.ok) {
+        throw new Error(
+          "Failed to generate quiz"
+        );
+      }
+
       router.refresh();
+
     } catch (error) {
       console.error(error);
-
-      alert("Gagal membuat summary");
     } finally {
       setLoading(false);
     }
@@ -50,12 +53,13 @@ export default function GenerateSummaryButton({
 
   return (
     <Button
+      variant="secondary"
       onClick={handleGenerate}
       disabled={loading}
     >
       {loading
         ? "Generating..."
-        : "Generate Summary"}
+        : "Generate Quiz"}
     </Button>
   );
 }

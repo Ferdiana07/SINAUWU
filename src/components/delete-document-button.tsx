@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   documentId: string;
@@ -54,14 +55,14 @@ export default function DeleteDocumentButton({
   }
 
   return (
-    <button
+    <Button
+      variant="destructive"
       onClick={handleDelete}
       disabled={loading}
-      className="rounded bg-red-600 px-3 py-2 text-white"
     >
       {loading
         ? "Deleting..."
         : "Delete"}
-    </button>
+    </Button>
   );
 }
