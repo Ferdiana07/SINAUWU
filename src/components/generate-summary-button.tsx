@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   documentId: string;
+  fullWidth?: boolean;
 }
 
 export default function GenerateSummaryButton({
   documentId,
+  fullWidth = false,
 }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,7 @@ export default function GenerateSummaryButton({
     <Button
       onClick={handleGenerate}
       disabled={loading}
+      className={fullWidth ? "mt-auto w-full" : undefined}
     >
       {loading
         ? "Generating..."

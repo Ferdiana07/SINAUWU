@@ -83,6 +83,8 @@ export async function POST(request: Request) {
       },
     );
   } catch (error) {
+    console.error("UPLOAD ERROR:", error);
+
     return Response.json(
       {
         ok: false,

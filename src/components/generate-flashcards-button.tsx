@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   documentId: string;
+  fullWidth?: boolean;
 }
 
 export default function GenerateFlashcardsButton({
   documentId,
+  fullWidth = false,
 }: Props) {
   const router = useRouter();
   const [loading, setLoading] =
@@ -64,6 +66,7 @@ export default function GenerateFlashcardsButton({
       variant="secondary"
       onClick={handleGenerate}
       disabled={loading}
+      className={fullWidth ? "mt-auto w-full" : undefined}
     >
       {loading
         ? "Generating..."

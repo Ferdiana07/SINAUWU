@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import QuizPlayer
 from "@/components/quiz-player";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -75,6 +77,16 @@ export default async function QuizPage(
     <div className="space-y-6">
 
       <div>
+        <Button
+          variant="ghost"
+          asChild
+          className="-ml-2 mb-3"
+        >
+          <Link href={`/dashboard/documents/${document.id}`}>
+            ← Kembali
+          </Link>
+        </Button>
+
         <h1 className="text-3xl font-bold">
           {quiz.title}
         </h1>

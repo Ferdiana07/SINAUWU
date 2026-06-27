@@ -1,7 +1,7 @@
 import { getDevUser } from "@/lib/dev-user";
 import { prisma } from "@/lib/prisma";
 
-const DEV_USER_EMAIL = "dev@sinauwu.local";
+
 
 export async function GET() {
   try {
