@@ -9,7 +9,6 @@ import {
   Upload,
   Settings,
   Sparkles,
-  ChevronRight,
 } from "lucide-react";
 import { SidebarStats } from "@/components/sidebar-stats";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -34,7 +33,7 @@ const navigation = [
 
 const secondaryNav = [
   {
-    name: "Settings",
+    name: "Pengaturan",
     href: "/dashboard/settings",
     icon: Settings,
   },
@@ -65,7 +64,7 @@ export function Sidebar() {
             Menu Utama
           </p>
           {navigation.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            const isActive = pathname === item.href;
             const Icon = item.icon;
 
             return (
@@ -75,20 +74,17 @@ export function Sidebar() {
                 className={cn(
                   "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-gradient-to-r from-violet-500/10 to-purple-500/10 text-violet-600 dark:text-violet-400 border-l-2 border-violet-500"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 <Icon
                   className={cn(
                     "h-4 w-4 transition-transform duration-200",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:scale-110"
+                    isActive ? "text-violet-600 dark:text-violet-400" : "text-muted-foreground group-hover:scale-110"
                   )}
                 />
                 <span>{item.name}</span>
-                {isActive && (
-                  <ChevronRight className="ml-auto h-3 w-3 text-primary" />
-                )}
               </Link>
             );
           })}
@@ -109,13 +105,16 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-gradient-to-r from-violet-500/10 to-purple-500/10 text-violet-600 dark:text-violet-400 border-l-2 border-violet-500"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className={cn(
+                "h-4 w-4",
+                isActive ? "text-violet-600 dark:text-violet-400" : ""
+              )} />
               <span>{item.name}</span>
             </Link>
           );

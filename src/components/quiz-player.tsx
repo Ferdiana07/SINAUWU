@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/toast";
-import { CheckCircle2, XCircle, RefreshCw, Clock, Trophy, Target, Zap } from "lucide-react";
+import { CheckCircle2, XCircle, RefreshCw, Trophy, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Question {
@@ -36,8 +36,6 @@ type AttemptResult = {
   results: QuestionResult[];
 };
 
-const QUIZ_TIME_MINUTES = 10; // 10 minutes per quiz
-
 export default function QuizPlayer({ quizId, questions }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
@@ -45,8 +43,6 @@ export default function QuizPlayer({ quizId, questions }: Props) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [attemptResult, setAttemptResult] = useState<AttemptResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_MINUTES * 60); // seconds
-  const [timerActive, setTimerActive] = useState(false);
 
   const answeredCount = Object.keys(answers).length;
   const totalQuestions = questions.length;
@@ -55,46 +51,6 @@ export default function QuizPlayer({ quizId, questions }: Props) {
   const scorePercentage = attemptResult
     ? Math.round((attemptResult.score / attemptResult.total) * 100)
     : 0;
-
-  // Timer effect
-  useEffect(() => {
-    if (!timerActive || attemptResult) return;
-
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          // Time's up - auto submit
-          handleTimeUp();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timerActive, attemptResult]);
-
-  // Start timer when user answers first question
-  useEffect(() => {
-    if (answeredCount === 1 && !timerActive) {
-      setTimerActive(true);
-    }
-  }, [answeredCount, timerActive]);
-
-  const handleTimeUp = useCallback(async () => {
-    addToast({
-      type: "warning",
-      title: "Waktu Habis!",
-      description: "Quiz akan disubmit otomatis.",
-    });
-    await handleSubmit(true);
-  }, [answers]);
-
-  function formatTime(seconds: number) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  }
 
   function handleAnswer(questionId: string, answer: string) {
     if (attemptResult) return;
@@ -105,8 +61,8 @@ export default function QuizPlayer({ quizId, questions }: Props) {
     }));
   }
 
-  async function handleSubmit(isTimeUp = false) {
-    if (!allAnswered && !isTimeUp) {
+  async function handleSubmit() {
+    if (!allAnswered) {
       addToast({
         type: "error",
         title: "Belum Selesai",
@@ -117,7 +73,6 @@ export default function QuizPlayer({ quizId, questions }: Props) {
 
     try {
       setSubmitting(true);
-      setTimerActive(false);
 
       const response = await fetch("/api/quiz-attempts", {
         method: "POST",
@@ -137,19 +92,11 @@ export default function QuizPlayer({ quizId, questions }: Props) {
         results: data.results,
       });
 
-      if (isTimeUp) {
-        addToast({
-          type: "info",
-          title: "Waktu Habis",
-          description: `Score: ${data.score}/${data.total}`,
-        });
-      } else {
-        addToast({
-          type: "success",
-          title: "Quiz Selesai!",
-          description: `Skor kamu: ${data.score}/${data.total}`,
-        });
-      }
+      addToast({
+        type: "success",
+        title: "Quiz Selesai!",
+        description: `Skor kamu: ${data.score}/${data.total}`,
+      });
 
       router.refresh();
     } catch (error) {
@@ -167,8 +114,6 @@ export default function QuizPlayer({ quizId, questions }: Props) {
   function handleRetry() {
     setAnswers({});
     setAttemptResult(null);
-    setTimeLeft(QUIZ_TIME_MINUTES * 60);
-    setTimerActive(false);
   }
 
   const getScoreMessage = () => {
@@ -182,7 +127,7 @@ export default function QuizPlayer({ quizId, questions }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* PROGRESS & TIMER SECTION */}
+      {/* PROGRESS SECTION */}
       <Card className="border-border/50 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <CardContent className="p-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -209,26 +154,15 @@ export default function QuizPlayer({ quizId, questions }: Props) {
               </div>
             </div>
 
-            {/* Timer */}
-            <div className="flex items-center gap-4">
-              {!attemptResult && (
-                <div className={cn(
-                  "flex items-center gap-2 rounded-xl px-4 py-2 font-mono text-lg font-bold",
-                  timeLeft <= 60 ? "bg-red-100 text-red-600 animate-pulse" : "bg-blue-100 text-blue-600"
-                )}>
-                  <Clock className="h-5 w-5" />
-                  {formatTime(timeLeft)}
-                </div>
-              )}
-              {attemptResult && (
-                <div className="flex items-center gap-2 rounded-xl bg-emerald-100 px-4 py-2">
-                  <Trophy className="h-5 w-5 text-emerald-600" />
-                  <span className="font-bold text-emerald-600">
-                    {attemptResult.score}/{attemptResult.total}
-                  </span>
-                </div>
-              )}
-            </div>
+            {/* Score Badge */}
+            {attemptResult && (
+              <div className="flex items-center gap-2 rounded-xl bg-emerald-100 px-4 py-2">
+                <Trophy className="h-5 w-5 text-emerald-600" />
+                <span className="font-bold text-emerald-600">
+                  {attemptResult.score}/{attemptResult.total}
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -365,7 +299,7 @@ export default function QuizPlayer({ quizId, questions }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row">
         {!attemptResult ? (
           <Button
-            onClick={() => handleSubmit(false)}
+            onClick={handleSubmit}
             disabled={submitting || !allAnswered}
             className="flex-1 h-12 text-base"
           >
@@ -390,7 +324,7 @@ export default function QuizPlayer({ quizId, questions }: Props) {
               Coba Lagi
             </Button>
             <Button asChild className="flex-1">
-              <a href="/dashboard/documents">Kembali ke Dashboard</a>
+              <a href="/dashboard/documents">Kembali</a>
             </Button>
           </>
         )}

@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { TopHeader } from "@/components/top-header";
 import Link from "next/link";
 import {
@@ -11,90 +9,15 @@ import {
   ClipboardList,
   TrendingUp,
   Clock,
-  ChevronRight,
   Upload,
   BookOpen,
   Brain,
   Target,
   ArrowUpRight,
-  Calendar,
 } from "lucide-react";
-import { BarChart, DonutChart, LineChart, Sparkline } from "@/components/charts";
+import { Sparkline } from "@/components/charts";
 
 export const dynamic = "force-dynamic";
-
-// Icon wrapper component for stats
-function StatIcon({ icon: Icon, className }: { icon: React.ComponentType<{ className?: string }>; className?: string }) {
-  return (
-    <div className={`rounded-xl p-3 ${className}`}>
-      <Icon className="h-5 w-5" />
-    </div>
-  );
-}
-
-// Quick Action Card Component
-function QuickActionCard({
-  title,
-  description,
-  href,
-  icon: Icon,
-  gradient,
-}: {
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 transition-all duration-300 hover:border-border hover:shadow-lg hover:shadow-black/5"
-    >
-      {/* Gradient accent */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
-
-      <div className="relative flex items-start gap-4">
-        <div className={`rounded-xl bg-gradient-to-br ${gradient} p-3 shadow-lg`}>
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-foreground">{title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1" />
-      </div>
-    </Link>
-  );
-}
-
-// Activity Item Component
-function ActivityItem({
-  title,
-  subtitle,
-  time,
-  icon: Icon,
-  color,
-}: {
-  title: string;
-  subtitle: string;
-  time: string;
-  icon: React.ComponentType<{ className?: string }>;
-  color: string;
-}) {
-  return (
-    <div className="flex items-center gap-4 rounded-xl p-3 transition-colors hover:bg-muted/50">
-      <div className={`rounded-full p-2 ${color}`}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="truncate text-sm font-medium">{title}</p>
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
-      </div>
-      <span className="text-xs text-muted-foreground whitespace-nowrap">{time}</span>
-    </div>
-  );
-}
 
 export default async function DashboardPage() {
   // Fetch all data
@@ -105,7 +28,6 @@ export default async function DashboardPage() {
     totalQuizzes,
     totalSummaries,
     recentQuizAttempts,
-    recentDocuments,
   ] = await Promise.all([
     prisma.document.findMany({
       orderBy: { createdAt: "desc" },
@@ -124,10 +46,6 @@ export default async function DashboardPage() {
       take: 5,
       include: { quiz: { include: { document: true } } },
     }),
-    prisma.document.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 7,
-    }),
   ]);
 
   // Calculate average quiz score
@@ -136,95 +54,52 @@ export default async function DashboardPage() {
     ? Math.round(allAttempts.reduce((acc, a) => acc + (a.score / 10) * 100, 0) / allAttempts.length)
     : 0;
 
-  // Generate chart data based on documents created in last 7 days
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (6 - i));
-    const dateStr = date.toISOString().split("T")[0];
-    return dateStr;
-  });
-
-  const documentsPerDay = last7Days.map((date) => ({
-    label: date.split("-")[2],
-    value: recentDocuments.filter((d) =>
-      d.createdAt.toISOString().startsWith(date)
-    ).length,
-  }));
-
-  // Mock quiz scores for chart (in real app, this would come from quiz attempts)
-  const quizScoresPerDay = last7Days.map(() => ({
-    label: "",
-    value: Math.floor(Math.random() * 100) + 50,
-  }));
-
-  // Content distribution for donut chart
-  const contentDistribution = [
-    { label: "Summary", value: totalSummaries, color: "#3b82f6" },
-    { label: "Flashcard", value: totalFlashcards, color: "#8b5cf6" },
-    { label: "Quiz", value: totalQuizzes, color: "#10b981" },
-  ];
+  // Generate sparkline data
+  const documentsSparkline = [10, 15, 12, 18, 20, 25, 22];
+  const summarySparkline = [8, 12, 10, 15, 18, 20, 22];
+  const flashcardsSparkline = [5, 8, 12, 15, 18, 22, 20];
+  const quizSparkline = [60, 65, 70, 75, 80, 75, 85];
 
   const stats = [
     {
       title: "Total Dokumen",
       value: totalDocuments,
-      change: totalDocuments > 0 ? `${documentsPerDay.reduce((a, b) => a + b.value, 0)} minggu ini` : "Mulai upload",
-      changeType: "positive" as const,
+      change: totalDocuments > 0 ? "documents" : "Mulai upload",
       icon: FileText,
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "bg-gradient-to-br from-blue-500/10 to-cyan-500/10",
       iconBg: "bg-blue-500",
-      sparklineData: documentsPerDay.map((d) => d.value),
+      sparklineData: documentsSparkline,
     },
     {
       title: "Rangkuman",
       value: totalSummaries,
-      change: totalSummaries > 0 ? "100% dibuat" : "Generate sekarang",
-      changeType: totalSummaries > 0 ? "positive" as const : "neutral" as const,
+      change: totalSummaries > 0 ? "rangkuman dibuat" : "Generate sekarang",
       icon: BookOpen,
       gradient: "from-emerald-500 to-teal-500",
       bgGradient: "bg-gradient-to-br from-emerald-500/10 to-teal-500/10",
       iconBg: "bg-emerald-500",
-      sparklineData: [10, 15, 12, 18, 20, 25, 22],
+      sparklineData: summarySparkline,
     },
     {
       title: "Flashcard",
       value: totalFlashcards,
       change: `${Math.round((totalFlashcards / Math.max(totalDocuments, 1)) * 10)} rata-rata`,
-      changeType: "neutral" as const,
       icon: Layers,
       gradient: "from-violet-500 to-purple-500",
       bgGradient: "bg-gradient-to-br from-violet-500/10 to-purple-500/10",
       iconBg: "bg-violet-500",
-      sparklineData: [5, 8, 12, 15, 18, 22, 20],
+      sparklineData: flashcardsSparkline,
     },
     {
       title: "Quiz Score",
       value: `${averageScore}%`,
       change: totalQuizzes > 0 ? `${allAttempts.length} attempt` : "Belum ada",
-      changeType: averageScore >= 70 ? "positive" as const : "neutral" as const,
       icon: Target,
       gradient: "from-amber-500 to-orange-500",
       bgGradient: "bg-gradient-to-br from-amber-500/10 to-orange-500/10",
       iconBg: "bg-amber-500",
-      sparklineData: [60, 65, 70, 75, 80, 75, 85],
-    },
-  ];
-
-  const quickActions = [
-    {
-      title: "Upload Dokumen Baru",
-      description: "Tambah materi PDF untuk diproses AI",
-      href: "/dashboard/upload",
-      icon: Upload,
-      gradient: "from-blue-500 to-cyan-500",
-    },
-    {
-      title: "Lihat Dokumen",
-      description: "Kelola semua materi yang sudah diupload",
-      href: "/dashboard/documents",
-      icon: FileText,
-      gradient: "from-violet-500 to-purple-500",
+      sparklineData: quizSparkline,
     },
   ];
 
@@ -251,9 +126,9 @@ export default async function DashboardPage() {
                     <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
                     <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
                     <div className="flex items-center gap-2">
-                      {stat.changeType === "positive" && (
+                      {stat.change.includes("rata-rata") || stat.change === "documents" ? (
                         <TrendingUp className="h-3 w-3 text-emerald-500" />
-                      )}
+                      ) : null}
                       <span className="text-xs text-muted-foreground">{stat.change}</span>
                     </div>
                     {/* Sparkline */}
@@ -271,59 +146,22 @@ export default async function DashboardPage() {
         })}
       </section>
 
-      {/* Charts Section */}
-      <section className="grid gap-6 lg:grid-cols-3">
-        {/* Documents Upload Chart */}
-        <div className="lg:col-span-2">
-          <BarChart
-            title="Dokumen Upload (7 Hari Terakhir)"
-            data={documentsPerDay}
-            height={200}
-            showValues
-          />
-        </div>
-
-        {/* Content Distribution */}
-        <div>
-          <DonutChart
-            title="Distribusi Konten"
-            data={contentDistribution}
-            centerLabel="Total"
-            centerValue={totalSummaries + totalFlashcards + totalQuizzes}
-            size={180}
-          />
-        </div>
-      </section>
-
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column - Quick Actions & Recent Activity */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Quick Actions */}
-          <Card className="border-border/50">
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold">Aksi Cepat</CardTitle>
-                <Badge variant="secondary" className="text-xs">Shortcuts</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="grid gap-3 sm:grid-cols-2">
-              {quickActions.map((action) => (
-                <QuickActionCard key={action.title} {...action} />
-              ))}
-            </CardContent>
-          </Card>
-
+        {/* Left Column - Recent Documents */}
+        <div className="lg:col-span-2">
           {/* Recent Documents */}
           <Card className="border-border/50">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-semibold">Dokumen Terbaru</CardTitle>
-                <Button variant="ghost" size="sm" asChild className="text-xs">
-                  <Link href="/dashboard/documents">
-                    Lihat semua <ArrowUpRight className="ml-1 h-3 w-3" />
-                  </Link>
-                </Button>
+                <Link
+                  href="/dashboard/documents"
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Lihat semua
+                  <ArrowUpRight className="h-3 w-3" />
+                </Link>
               </div>
             </CardHeader>
             <CardContent>
@@ -336,9 +174,13 @@ export default async function DashboardPage() {
                   <p className="mt-1 text-sm text-muted-foreground">
                     Upload PDF pertama untuk memulai
                   </p>
-                  <Button asChild className="mt-4">
-                    <Link href="/dashboard/upload">Upload Sekarang</Link>
-                  </Button>
+                  <Link
+                    href="/dashboard/upload"
+                    className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Upload Sekarang
+                  </Link>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -346,7 +188,7 @@ export default async function DashboardPage() {
                     <Link
                       key={doc.id}
                       href={`/dashboard/documents/${doc.id}`}
-                      className="group flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-muted/50"
+                      className="group flex items-center gap-4 rounded-xl border border-transparent p-3 transition-all hover:border-border hover:bg-muted/50"
                     >
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
                         <FileText className="h-5 w-5 text-blue-600" />
@@ -360,10 +202,15 @@ export default async function DashboardPage() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {doc.status}
-                        </Badge>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1" />
+                        {doc.summary ? (
+                          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                            Summary
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                            Uploaded
+                          </span>
+                        )}
                       </div>
                     </Link>
                   ))}
@@ -373,7 +220,7 @@ export default async function DashboardPage() {
           </Card>
         </div>
 
-        {/* Right Column - Activity & Progress */}
+        {/* Right Column - Activity */}
         <div className="space-y-6">
           {/* Recent Quiz Activity */}
           <Card className="border-border/50">
@@ -397,17 +244,26 @@ export default async function DashboardPage() {
               ) : (
                 <div className="space-y-1">
                   {recentQuizAttempts.map((attempt) => (
-                    <ActivityItem
+                    <div
                       key={attempt.id}
-                      title={`Quiz: ${attempt.quiz.title}`}
-                      subtitle={`Score: ${attempt.score}/10`}
-                      time={new Date(attempt.createdAt).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                      icon={Brain}
-                      color="bg-violet-500/10 text-violet-600"
-                    />
+                      className="flex items-center gap-4 rounded-xl p-3 transition-colors hover:bg-muted/50"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/10">
+                        <Brain className="h-4 w-4 text-violet-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate text-sm font-medium">{attempt.quiz.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Score: {attempt.score}/10
+                        </p>
+                      </div>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {new Date(attempt.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </span>
+                    </div>
                   ))}
                 </div>
               )}

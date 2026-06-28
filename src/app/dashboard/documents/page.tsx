@@ -7,15 +7,13 @@ export default async function DocumentsPage() {
   const documents = await prisma.document.findMany({
     include: {
       summary: true,
-      flashcards: true,
-      quizzes: true,
     },
     orderBy: {
       createdAt: "desc",
     },
   });
 
-  // Serialize dates for client component
+  // Serialize for client component
   const serializedDocuments = documents.map((doc) => ({
     id: doc.id,
     title: doc.title,
@@ -23,8 +21,6 @@ export default async function DocumentsPage() {
     status: doc.status,
     createdAt: doc.createdAt,
     summary: doc.summary,
-    flashcards: doc.flashcards,
-    quizzes: doc.quizzes,
   }));
 
   return <DocumentsClient initialDocuments={serializedDocuments} />;

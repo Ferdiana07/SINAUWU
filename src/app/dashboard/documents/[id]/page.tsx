@@ -1,22 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { TopHeader } from "@/components/top-header";
-import GenerateSummaryButton from "@/components/generate-summary-button";
-import GenerateFlashcardsButton from "@/components/generate-flashcards-button";
-import GenerateQuizButton from "@/components/generate-quiz-button";
+import GenerateSummaryButton, { RegenerateSummaryButton } from "@/components/generate-summary-button";
+import GenerateFlashcardsButton, { RegenerateFlashcardsButton } from "@/components/generate-flashcards-button";
+import GenerateQuizButton, { RegenerateQuizButton } from "@/components/generate-quiz-button";
 import DeleteDocumentButton from "@/components/delete-document-button";
-import {
-  FileText,
-  Layers,
-  ClipboardList,
-  CheckCircle2,
-  Clock,
-  ArrowRight,
-  Sparkles,
-} from "lucide-react";
+import { FileText, Calendar } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -42,51 +32,47 @@ export default async function DocumentDetailPage({
         <TopHeader title="Dokumen Tidak Ditemukan" />
         <Card className="border-destructive/50">
           <CardContent className="flex flex-col items-center justify-center py-16">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-destructive/10">
-              <FileText className="h-10 w-10 text-destructive" />
-            </div>
             <h3 className="text-xl font-semibold">Dokumen tidak ditemukan</h3>
             <p className="mt-2 text-center text-muted-foreground">
               Dokumen yang kamu cari tidak ada atau sudah dihapus.
             </p>
-            <Button asChild className="mt-6">
-              <Link href="/dashboard/documents">Kembali ke Dokumen</Link>
-            </Button>
+            <Link
+              href="/dashboard/documents"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Kembali ke Dokumen
+            </Link>
           </CardContent>
         </Card>
       </div>
     );
   }
 
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
+
   const learningOptions = [
     {
       title: "Rangkuman",
-      description: "Baca penjelasan ringkas yang mudah dipahami sebelum masuk ke materi lebih dalam.",
-      icon: FileText,
-      gradient: "from-blue-500 to-cyan-500",
-      href: document.summary ? `/dashboard/documents/${document.id}/summary` : null,
-      generated: !!document.summary,
-      generateButton: <GenerateSummaryButton documentId={document.id} fullWidth />,
+      description: "Rangkuman akan merangkum seluruh isi dokumen PDF menjadi poin-poin penting yang mudah dipahami. Cocok untuk review cepat sebelum ujian.",
       count: document.summary ? "1 rangkuman" : null,
     },
     {
       title: "Flashcard",
-      description: "Latih hafalan dengan kartu interaktif yang memudahkan review materi.",
-      icon: Layers,
-      gradient: "from-violet-500 to-purple-500",
-      href: document.flashcards.length > 0 ? `/dashboard/documents/${document.id}/flashcards` : null,
-      generated: document.flashcards.length > 0,
-      generateButton: <GenerateFlashcardsButton documentId={document.id} fullWidth />,
+      description: "Flashcard akan mengubah materi PDF menjadi kartu tanya jawab interaktif. Berguna untuk mengingat konsep penting dengan teknik spaced repetition.",
       count: document.flashcards.length > 0 ? `${document.flashcards.length} kartu` : null,
     },
     {
       title: "Quiz",
-      description: "Uji pemahaman dengan soal latihan langsung dari materi yang kamu upload.",
-      icon: ClipboardList,
-      gradient: "from-emerald-500 to-teal-500",
-      href: document.quizzes.length > 0 ? `/dashboard/documents/${document.id}/quiz` : null,
-      generated: document.quizzes.length > 0,
-      generateButton: <GenerateQuizButton documentId={document.id} fullWidth />,
+      description: "Quiz akan membuat soal pilihan ganda berdasarkan materi PDF. Uji pemahamanmu dan lihat skor untuk mengetahui seberapa paham materinya.",
       count: document.quizzes.length > 0 ? `${document.quizzes.length} quiz` : null,
     },
   ];
@@ -98,113 +84,124 @@ export default async function DocumentDetailPage({
         actions={<DeleteDocumentButton documentId={document.id} />}
       />
 
-      {/* Document Info Card */}
+      {/* Document Info */}
       <Card className="border-border/50">
         <CardContent className="p-6">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
-                <FileText className="h-7 w-7 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
+                <FileText className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">{document.title}</h2>
-                <p className="text-sm text-muted-foreground">{document.fileName}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
-                <Badge
-                  variant="secondary"
-                  className={document.status === "PROCESSED" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"}
-                >
-                  {document.status === "PROCESSED" ? (
-                    <CheckCircle2 className="mr-1 h-3 w-3" />
-                  ) : (
-                    <Clock className="mr-1 h-3 w-3" />
-                  )}
-                  {document.status}
-                </Badge>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Upload: {document.createdAt.toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
+                <p className="text-sm font-medium">{document.fileName}</p>
+                <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-3 w-3" />
+                  <span>Diupload: {formatDate(document.createdAt)}</span>
+                </div>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Learning Options */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Pilih Cara Belajar</h2>
+      {/* Learning Options - 3 Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        {/* Rangkuman Card */}
+        <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
+          <CardContent className="p-6">
+            <div className="mb-2">
+              <h3 className="text-base font-semibold">Rangkuman</h3>
+              {document.summary && (
+                <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[0].count}</span>
+              )}
+            </div>
+            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+              {learningOptions[0].description}
+            </p>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {learningOptions.map((option) => {
-            const Icon = option.icon;
-            return (
-              <Card
-                key={option.title}
-                className="group relative overflow-hidden border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5"
-              >
-                {/* Gradient accent */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
+            {/* Tombol Actions */}
+            <div className="space-y-2">
+              {document.summary ? (
+                <>
+                  <Link
+                    href={`/dashboard/documents/${document.id}/summary`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  >
+                    Buka Rangkuman
+                  </Link>
+                  <RegenerateSummaryButton />
+                </>
+              ) : (
+                <GenerateSummaryButton />
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-                <CardContent className="relative p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div className={`rounded-xl ${option.gradient} p-3 shadow-lg`}>
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-                    {option.count && (
-                      <Badge variant="secondary" className="text-xs">
-                        {option.count}
-                      </Badge>
-                    )}
-                  </div>
+        {/* Flashcard Card */}
+        <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
+          <CardContent className="p-6">
+            <div className="mb-2">
+              <h3 className="text-base font-semibold">Flashcard</h3>
+              {document.flashcards.length > 0 && (
+                <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[1].count}</span>
+              )}
+            </div>
+            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+              {learningOptions[1].description}
+            </p>
 
-                  <h3 className="mb-2 text-lg font-semibold">{option.title}</h3>
-                  <p className="mb-6 text-sm text-muted-foreground">{option.description}</p>
+            {/* Tombol Actions */}
+            <div className="space-y-2">
+              {document.flashcards.length > 0 ? (
+                <>
+                  <Link
+                    href={`/dashboard/documents/${document.id}/flashcards`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  >
+                    Buka Flashcard
+                  </Link>
+                  <RegenerateFlashcardsButton />
+                </>
+              ) : (
+                <GenerateFlashcardsButton />
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-                  {option.href ? (
-                    <Button asChild className="w-full">
-                      <Link href={option.href}>
-                        Buka {option.title}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  ) : (
-                    option.generateButton
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        {/* Quiz Card */}
+        <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
+          <CardContent className="p-6">
+            <div className="mb-2">
+              <h3 className="text-base font-semibold">Quiz</h3>
+              {document.quizzes.length > 0 && (
+                <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[2].count}</span>
+              )}
+            </div>
+            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+              {learningOptions[2].description}
+            </p>
+
+            {/* Tombol Actions */}
+            <div className="space-y-2">
+              {document.quizzes.length > 0 ? (
+                <>
+                  <Link
+                    href={`/dashboard/documents/${document.id}/quiz`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  >
+                    Buka Quiz
+                  </Link>
+                  <RegenerateQuizButton />
+                </>
+              ) : (
+                <GenerateQuizButton />
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
-      {/* Quick Stats */}
-      <Card className="border-border/50">
-        <CardContent className="p-6">
-          <h3 className="mb-4 text-sm font-semibold text-muted-foreground">RINGKASAN PEMBUATAN</h3>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="rounded-xl bg-muted/50 p-4">
-              <p className="text-2xl font-bold">{document.summary ? "✓" : "–"}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Summary</p>
-            </div>
-            <div className="rounded-xl bg-muted/50 p-4">
-              <p className="text-2xl font-bold">{document.flashcards.length}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Flashcard</p>
-            </div>
-            <div className="rounded-xl bg-muted/50 p-4">
-              <p className="text-2xl font-bold">{document.quizzes.length}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Quiz</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
