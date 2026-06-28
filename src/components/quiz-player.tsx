@@ -129,19 +129,19 @@ export default function QuizPlayer({ quizId, questions }: Props) {
     <div className="space-y-6">
       {/* PROGRESS SECTION */}
       <Card className="border-border/50 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
             {/* Progress */}
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-2 sm:space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-600" />
-                  <span className="text-sm font-medium">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                  <span className="text-xs sm:text-sm font-medium">
                     {answeredCount}/{totalQuestions} soal dijawab
                   </span>
                 </div>
                 {allAnswered && !attemptResult && (
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+                  <span className="rounded-full bg-emerald-100 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-medium text-emerald-700">
                     ✓ Siap Submit
                   </span>
                 )}
@@ -156,9 +156,9 @@ export default function QuizPlayer({ quizId, questions }: Props) {
 
             {/* Score Badge */}
             {attemptResult && (
-              <div className="flex items-center gap-2 rounded-xl bg-emerald-100 px-4 py-2">
-                <Trophy className="h-5 w-5 text-emerald-600" />
-                <span className="font-bold text-emerald-600">
+              <div className="flex items-center gap-2 rounded-xl bg-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2">
+                <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
+                <span className="font-bold text-emerald-600 text-sm sm:text-base">
                   {attemptResult.score}/{attemptResult.total}
                 </span>
               </div>
@@ -168,7 +168,7 @@ export default function QuizPlayer({ quizId, questions }: Props) {
       </Card>
 
       {/* QUESTIONS SECTION */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {questions.map((question, index) => {
           const result = attemptResult?.results.find((item) => item.questionId === question.id);
           const userAnswer = answers[question.id];
@@ -183,34 +183,34 @@ export default function QuizPlayer({ quizId, questions }: Props) {
               )}
             >
               <div className={cn(
-                "border-b border-border/50 px-4 py-3",
+                "border-b border-border/50 px-3 sm:px-4 py-2.5 sm:py-3",
                 result?.isCorrect === true && "bg-emerald-100/50 dark:bg-emerald-900/30",
                 result?.isCorrect === false && "bg-red-100/50 dark:bg-red-900/30"
               )}>
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <div className={cn(
-                    "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl font-bold text-sm",
+                    "flex h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm",
                     result?.isCorrect === true && "bg-emerald-500 text-white",
                     result?.isCorrect === false && "bg-red-500 text-white",
                     !result && "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                   )}>
                     {index + 1}
                   </div>
-                  <h2 className="flex-1 text-sm font-semibold leading-relaxed">
+                  <h2 className="flex-1 text-xs sm:text-sm font-semibold leading-relaxed">
                     {question.question}
                   </h2>
                   {result && (
                     result.isCorrect ? (
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 flex-shrink-0" />
                     ) : (
-                      <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                      <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 flex-shrink-0" />
                     )
                   )}
                 </div>
               </div>
 
               {/* Options */}
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="space-y-2">
                   {[
                     { letter: "A", text: question.optionA },
@@ -250,14 +250,14 @@ export default function QuizPlayer({ quizId, questions }: Props) {
                       <label
                         key={letter}
                         className={cn(
-                          "flex items-center gap-3 rounded-xl border-2 p-4 transition-all",
+                          "flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl border-2 p-3 sm:p-4 transition-all",
                           bgColor, borderColor, textColor, hoverEffect
                         )}
                       >
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-muted font-bold text-sm">
+                        <div className="flex h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0 items-center justify-center rounded-lg bg-muted font-bold text-xs sm:text-sm">
                           {letter}
                         </div>
-                        <div className="flex-1 text-sm">{text}</div>
+                        <div className="flex-1 text-xs sm:text-sm">{text}</div>
                         {!attemptResult && (
                           <input
                             type="radio"
@@ -265,14 +265,14 @@ export default function QuizPlayer({ quizId, questions }: Props) {
                             value={letter}
                             checked={isSelected}
                             onChange={() => handleAnswer(question.id, letter)}
-                            className="h-4 w-4 accent-blue-600"
+                            className="h-4 w-4 accent-blue-600 flex-shrink-0"
                           />
                         )}
                         {result && isCorrectAnswer && (
-                          <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                          <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 flex-shrink-0" />
                         )}
                         {result && isUserWrongChoice && (
-                          <XCircle className="h-5 w-5 text-red-600" />
+                          <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 flex-shrink-0" />
                         )}
                       </label>
                     );
@@ -281,12 +281,12 @@ export default function QuizPlayer({ quizId, questions }: Props) {
 
                 {/* Explanation */}
                 {result?.explanation && (
-                  <div className="mt-4 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/30">
-                    <div className="mb-2 flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">Penjelasan</span>
+                  <div className="mt-3 sm:mt-4 rounded-lg sm:rounded-xl bg-blue-50 p-3 sm:p-4 dark:bg-blue-950/30">
+                    <div className="mb-1 sm:mb-2 flex items-center gap-2">
+                      <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
+                      <span className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-100">Penjelasan</span>
                     </div>
-                    <p className="text-sm text-blue-800 dark:text-blue-200">{result.explanation}</p>
+                    <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">{result.explanation}</p>
                   </div>
                 )}
               </CardContent>
@@ -296,12 +296,12 @@ export default function QuizPlayer({ quizId, questions }: Props) {
       </div>
 
       {/* ACTION BUTTONS */}
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:gap-3 sm:flex-row">
         {!attemptResult ? (
           <Button
             onClick={handleSubmit}
             disabled={submitting || !allAnswered}
-            className="flex-1 h-12 text-base"
+            className="flex-1 h-10 sm:h-12 text-sm sm:text-base"
           >
             {submitting ? (
               <>
@@ -319,11 +319,11 @@ export default function QuizPlayer({ quizId, questions }: Props) {
           </Button>
         ) : (
           <>
-            <Button onClick={handleRetry} variant="outline" className="flex-1">
+            <Button onClick={handleRetry} variant="outline" className="flex-1 text-sm sm:text-base">
               <RefreshCw className="mr-2 h-4 w-4" />
               Coba Lagi
             </Button>
-            <Button asChild className="flex-1">
+            <Button asChild className="flex-1 text-sm sm:text-base">
               <a href="/dashboard/documents">Kembali</a>
             </Button>
           </>
@@ -333,29 +333,29 @@ export default function QuizPlayer({ quizId, questions }: Props) {
       {/* RESULT SUMMARY */}
       {attemptResult && (
         <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 dark:border-emerald-800 dark:from-emerald-950/30 dark:to-teal-950/30">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="text-center">
-              <div className="mb-4 text-5xl">{scoreInfo.emoji}</div>
-              <h2 className={cn("text-3xl font-bold", scoreInfo.color)}>
+              <div className="mb-3 sm:mb-4 text-4xl sm:text-5xl">{scoreInfo.emoji}</div>
+              <h2 className={cn("text-2xl sm:text-3xl font-bold", scoreInfo.color)}>
                 {scorePercentage}%
               </h2>
-              <p className="mt-2 text-lg font-semibold text-foreground">
+              <p className="mt-2 text-sm sm:text-base md:text-lg font-semibold text-foreground">
                 {scoreInfo.text} Kamu mendapat {attemptResult.score} dari {attemptResult.total} jawaban benar!
               </p>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-4">
-              <div className="rounded-xl bg-white/60 p-4 text-center dark:bg-slate-900/60">
-                <p className="text-2xl font-bold text-emerald-600">{attemptResult.score}</p>
-                <p className="text-sm text-muted-foreground">Benar</p>
+            <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+              <div className="rounded-lg sm:rounded-xl bg-white/60 p-3 sm:p-4 text-center dark:bg-slate-900/60">
+                <p className="text-xl sm:text-2xl font-bold text-emerald-600">{attemptResult.score}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Benar</p>
               </div>
-              <div className="rounded-xl bg-white/60 p-4 text-center dark:bg-slate-900/60">
-                <p className="text-2xl font-bold text-blue-600">{attemptResult.total}</p>
-                <p className="text-sm text-muted-foreground">Total</p>
+              <div className="rounded-lg sm:rounded-xl bg-white/60 p-3 sm:p-4 text-center dark:bg-slate-900/60">
+                <p className="text-xl sm:text-2xl font-bold text-blue-600">{attemptResult.total}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total</p>
               </div>
-              <div className="rounded-xl bg-white/60 p-4 text-center dark:bg-slate-900/60">
-                <p className="text-2xl font-bold text-red-600">{attemptResult.total - attemptResult.score}</p>
-                <p className="text-sm text-muted-foreground">Salah</p>
+              <div className="rounded-lg sm:rounded-xl bg-white/60 p-3 sm:p-4 text-center dark:bg-slate-900/60">
+                <p className="text-xl sm:text-2xl font-bold text-red-600">{attemptResult.total - attemptResult.score}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Salah</p>
               </div>
             </div>
           </CardContent>

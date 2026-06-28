@@ -112,7 +112,7 @@ export default async function DashboardPage() {
       />
 
       {/* Stats Cards */}
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -120,24 +120,24 @@ export default async function DashboardPage() {
               {/* Top gradient accent */}
               <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
 
-              <CardContent className="relative p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 space-y-3">
-                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                    <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
+              <CardContent className="relative p-4 sm:p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 space-y-3 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">{stat.title}</p>
+                    <p className="text-2xl sm:text-3xl font-bold tracking-tight">{stat.value}</p>
                     <div className="flex items-center gap-2">
                       {stat.change.includes("rata-rata") || stat.change === "documents" ? (
-                        <TrendingUp className="h-3 w-3 text-emerald-500" />
+                        <TrendingUp className="h-3 w-3 text-emerald-500 flex-shrink-0" />
                       ) : null}
-                      <span className="text-xs text-muted-foreground">{stat.change}</span>
+                      <span className="text-xs text-muted-foreground truncate">{stat.change}</span>
                     </div>
                     {/* Sparkline */}
                     <div className="pt-1">
                       <Sparkline data={stat.sparklineData} color={stat.iconBg.replace("bg-", "var(--") + ")"} className="h-6 w-20" />
                     </div>
                   </div>
-                  <div className={`rounded-xl ${stat.iconBg} p-3 shadow-lg transition-transform duration-300 group-hover:scale-110`}>
-                    <Icon className="h-5 w-5 text-white" />
+                  <div className={`rounded-xl ${stat.iconBg} p-2.5 sm:p-3 shadow-lg transition-transform duration-300 group-hover:scale-110 flex-shrink-0`}>
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -152,26 +152,26 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2">
           {/* Recent Documents */}
           <Card className="border-border/50">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-4 px-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold">Dokumen Terbaru</CardTitle>
+                <CardTitle className="text-base sm:text-lg font-semibold">Dokumen Terbaru</CardTitle>
                 <Link
                   href="/dashboard/documents"
-                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Lihat semua
                   <ArrowUpRight className="h-3 w-3" />
                 </Link>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6">
               {documents.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-8 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                    <FileText className="h-6 w-6 text-muted-foreground" />
+                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6 sm:p-8 text-center">
+                  <div className="mx-auto mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-muted">
+                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
                   </div>
-                  <p className="font-medium">Belum ada dokumen</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="font-medium text-sm sm:text-base">Belum ada dokumen</p>
+                  <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                     Upload PDF pertama untuk memulai
                   </p>
                   <Link
@@ -188,26 +188,24 @@ export default async function DashboardPage() {
                     <Link
                       key={doc.id}
                       href={`/dashboard/documents/${doc.id}`}
-                      className="group flex items-center gap-4 rounded-xl border border-transparent p-3 transition-all hover:border-border hover:bg-muted/50"
+                      className="group flex items-center gap-3 sm:gap-4 rounded-xl border border-transparent p-2.5 sm:p-3 transition-all hover:border-border hover:bg-muted/50"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
-                        <FileText className="h-5 w-5 text-blue-600" />
+                      <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex-shrink-0">
+                        <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm font-medium group-hover:text-blue-600 transition-colors">
-                          {doc.title}
-                        </p>
+                        <p className="truncate text-sm font-medium group-hover:text-blue-600 transition-colors">{doc.title}</p>
                         <p className="text-xs text-muted-foreground">
                           {doc.createdAt.toLocaleDateString("id-ID")}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         {doc.summary ? (
-                          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                             Summary
                           </span>
                         ) : (
-                          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                             Uploaded
                           </span>
                         )}
@@ -224,19 +222,19 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           {/* Recent Quiz Activity */}
           <Card className="border-border/50">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-4 px-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold">Aktivitas Quiz</CardTitle>
+                <CardTitle className="text-base sm:text-lg font-semibold">Aktivitas Quiz</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6">
               {recentQuizAttempts.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6 text-center">
-                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-                    <Target className="h-5 w-5 text-muted-foreground" />
+                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-4 sm:p-6 text-center">
+                  <div className="mx-auto mb-3 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-muted">
+                    <Target className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   </div>
-                  <p className="text-sm font-medium">Belum ada aktivitas quiz</p>
+                  <p className="text-xs sm:text-sm font-medium">Belum ada aktivitas quiz</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     Selesaikan quiz untuk melihat progress
                   </p>
@@ -246,18 +244,18 @@ export default async function DashboardPage() {
                   {recentQuizAttempts.map((attempt) => (
                     <div
                       key={attempt.id}
-                      className="flex items-center gap-4 rounded-xl p-3 transition-colors hover:bg-muted/50"
+                      className="flex items-center gap-3 sm:gap-4 rounded-xl p-2.5 sm:p-3 transition-colors hover:bg-muted/50"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/10">
-                        <Brain className="h-4 w-4 text-violet-600" />
+                      <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">
+                        <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-violet-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm font-medium">{attempt.quiz.title}</p>
+                        <p className="truncate text-xs sm:text-sm font-medium">{attempt.quiz.title}</p>
                         <p className="text-xs text-muted-foreground">
                           Score: {attempt.score}/10
                         </p>
                       </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
                         {new Date(attempt.createdAt).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "short",
@@ -272,14 +270,14 @@ export default async function DashboardPage() {
 
           {/* Learning Progress */}
           <Card className="border-border/50">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Progress Belajar</CardTitle>
+            <CardHeader className="pb-4 px-4 sm:px-6">
+              <CardTitle className="text-base sm:text-lg font-semibold">Progress Belajar</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 px-4 sm:px-6">
               {/* Progress Items */}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
                     <span className="text-muted-foreground">Dokumen Diproses</span>
                     <span className="font-medium">{totalDocuments > 0 ? 100 : 0}%</span>
                   </div>
@@ -292,7 +290,7 @@ export default async function DashboardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
                     <span className="text-muted-foreground">Rangkuman Dibuat</span>
                     <span className="font-medium">
                       {totalDocuments > 0 ? Math.round((totalSummaries / totalDocuments) * 100) : 0}%
@@ -307,7 +305,7 @@ export default async function DashboardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
                     <span className="text-muted-foreground">Flashcard Dibuat</span>
                     <span className="font-medium">
                       {totalDocuments > 0 ? Math.min(100, Math.round((totalFlashcards / Math.max(totalDocuments * 10, 1)) * 100)) : 0}%
@@ -324,9 +322,9 @@ export default async function DashboardPage() {
 
               {/* CTA */}
               {totalDocuments === 0 && (
-                <div className="rounded-xl border border-dashed border-border bg-gradient-to-br from-blue-50 to-cyan-50 p-4 text-center dark:from-blue-950/30 dark:to-cyan-950/30">
-                  <Sparkles className="mx-auto mb-2 h-6 w-6 text-blue-600" />
-                  <p className="text-sm font-medium">Mulai perjalanan belajarmu</p>
+                <div className="rounded-xl border border-dashed border-border bg-gradient-to-br from-blue-50 to-cyan-50 p-3 sm:p-4 text-center dark:from-blue-950/30 dark:to-cyan-950/30">
+                  <Sparkles className="mx-auto mb-2 h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                  <p className="text-xs sm:text-sm font-medium">Mulai perjalanan belajarmu</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     Upload PDF untuk melihat progress
                   </p>

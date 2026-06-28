@@ -33,10 +33,10 @@ export function TopHeader({
   }
 
   return (
-    <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pl-10 lg:pl-0">
       <div className="flex-1">
         {/* Breadcrumbs */}
-        <nav className="mb-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+        <nav className="mb-2 flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
           <Link
             href="/dashboard"
             className="flex items-center gap-1 hover:text-foreground transition-colors"
@@ -45,16 +45,16 @@ export function TopHeader({
           </Link>
           {breadcrumbs.map((crumb, index) => (
             <span key={index} className="flex items-center gap-1.5">
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
+              <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/50" />
               {crumb.href && index < breadcrumbs.length - 1 ? (
                 <Link
                   href={crumb.href}
-                  className="hover:text-foreground transition-colors"
+                  className="hover:text-foreground transition-colors whitespace-nowrap"
                 >
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="font-medium text-foreground">
+                <span className="font-medium text-foreground whitespace-nowrap">
                   {title || crumb.label}
                 </span>
               )}
@@ -63,7 +63,7 @@ export function TopHeader({
         </nav>
 
         {/* Title & Description */}
-        {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
+        {title && <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{title}</h1>}
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
       </div>
 

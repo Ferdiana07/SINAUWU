@@ -16,18 +16,18 @@ export default function UploadPage() {
         {/* Upload Form */}
         <div className="lg:col-span-2">
           <Card className="border-border/50">
-            <CardHeader>
+            <CardHeader className="px-4 sm:px-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/25">
-                  <Upload className="h-5 w-5 text-white" />
+                <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/25">
+                  <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg">Form Upload</CardTitle>
-                  <p className="text-sm text-muted-foreground">Pilih file PDF yang ingin diproses</p>
+                  <CardTitle className="text-base sm:text-lg">Form Upload</CardTitle>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Pilih file PDF yang ingin diproses</p>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
               <UploadPdfForm />
             </CardContent>
           </Card>
@@ -36,10 +36,10 @@ export default function UploadPage() {
         {/* Guidelines */}
         <div className="space-y-4">
           <Card className="border-border/50">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Tips Upload</CardTitle>
+            <CardHeader className="pb-3 px-4 sm:px-6">
+              <CardTitle className="text-sm sm:text-base">Tips Upload</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
               <div className="flex gap-3">
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                   <FileText className="h-4 w-4" />
@@ -73,30 +73,31 @@ export default function UploadPage() {
           </Card>
 
           <Card className="border-border/50 bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/20 dark:to-purple-950/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
+            <CardHeader className="pb-3 px-4 sm:px-6">
+              <CardTitle className="text-sm sm:text-base flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-violet-600" />
-                Apa yang terjadi setelah upload?
+                <span className="hidden sm:inline">Apa yang terjadi setelah upload?</span>
+                <span className="sm:hidden">Setelah Upload</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 sm:space-y-3 px-4 sm:px-6 pb-4 sm:pb-6">
               <div className="flex items-start gap-3">
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
+                <div className="flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
                   1
                 </div>
-                <p className="text-sm text-muted-foreground">PDF diproses dan teks diekstrak</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">PDF diproses dan teks diekstrak</p>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
+                <div className="flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
                   2
                 </div>
-                <p className="text-sm text-muted-foreground">AI membuat rangkuman otomatis</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">AI membuat rangkuman otomatis</p>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
+                <div className="flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
                   3
                 </div>
-                <p className="text-sm text-muted-foreground">Flashcard dan quiz siap dibuat</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Flashcard dan quiz siap dibuat</p>
               </div>
             </CardContent>
           </Card>

@@ -8,12 +8,12 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar - Fixed on the left */}
+      {/* Sidebar - Fixed on the left, hidden on mobile */}
       <Sidebar />
 
-      {/* Main Content - Offset by sidebar width */}
-      <main className="pl-64">
-        <div className="min-h-screen p-8">
+      {/* Main Content - Offset by sidebar width on desktop */}
+      <main className="lg:pl-64">
+        <div className="min-h-screen p-4 sm:p-6 md:p-8">
           {children}
         </div>
       </main>

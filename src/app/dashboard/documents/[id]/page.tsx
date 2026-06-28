@@ -86,17 +86,17 @@ export default async function DocumentDetailPage({
 
       {/* Document Info */}
       <Card className="border-border/50">
-        <CardContent className="p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
-                <FileText className="h-6 w-6 text-blue-600" />
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
+                <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </div>
-              <div>
-                <p className="text-sm font-medium">{document.fileName}</p>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{document.fileName}</p>
                 <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
-                  <span>Diupload: {formatDate(document.createdAt)}</span>
+                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">Diupload: {formatDate(document.createdAt)}</span>
                 </div>
               </div>
             </div>
@@ -105,17 +105,17 @@ export default async function DocumentDetailPage({
       </Card>
 
       {/* Learning Options - 3 Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {/* Rangkuman Card */}
         <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="mb-2">
               <h3 className="text-base font-semibold">Rangkuman</h3>
               {document.summary && (
                 <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[0].count}</span>
               )}
             </div>
-            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+            <p className="mb-4 sm:mb-6 text-sm text-muted-foreground leading-relaxed">
               {learningOptions[0].description}
             </p>
 
@@ -140,14 +140,14 @@ export default async function DocumentDetailPage({
 
         {/* Flashcard Card */}
         <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="mb-2">
               <h3 className="text-base font-semibold">Flashcard</h3>
               {document.flashcards.length > 0 && (
                 <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[1].count}</span>
               )}
             </div>
-            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+            <p className="mb-4 sm:mb-6 text-sm text-muted-foreground leading-relaxed">
               {learningOptions[1].description}
             </p>
 
@@ -171,15 +171,15 @@ export default async function DocumentDetailPage({
         </Card>
 
         {/* Quiz Card */}
-        <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5">
-          <CardContent className="p-6">
+        <Card className="border-border/50 bg-card transition-all duration-300 hover:shadow-lg hover:shadow-black/5 sm:col-span-2 lg:col-span-1">
+          <CardContent className="p-4 sm:p-6">
             <div className="mb-2">
               <h3 className="text-base font-semibold">Quiz</h3>
               {document.quizzes.length > 0 && (
                 <span className="text-xs text-emerald-600 font-medium">✓ {learningOptions[2].count}</span>
               )}
             </div>
-            <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
+            <p className="mb-4 sm:mb-6 text-sm text-muted-foreground leading-relaxed">
               {learningOptions[2].description}
             </p>
 
