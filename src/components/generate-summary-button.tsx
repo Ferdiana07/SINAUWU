@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast";
+import { Sparkles, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   documentId: string;
@@ -13,38 +15,50 @@ export default function GenerateSummaryButton({
   documentId,
   fullWidth = false,
 }: Props) {
-  const router = useRouter();
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
 
   async function handleGenerate() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "/api/summary",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            documentId,
-          }),
-        }
-      );
+      addToast({
+        type: "info",
+        title: "Generating Summary",
+        description: "AI sedang membuat rangkuman untukmu...",
+      });
 
-      const data =
-        await response.json();
+      const response = await fetch("/api/summary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          documentId,
+        }),
+      });
 
-      console.log(data);
+      const data = await response.json();
 
-      alert("Summary berhasil dibuat");
-      router.refresh();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate summary");
+      }
+
+      addToast({
+        type: "success",
+        title: "Summary Berhasil Dibuat!",
+        description: "Rangkuman sudah siap untuk dibaca.",
+      });
+
+      // Refresh page to show the new summary
+      window.location.href = `/dashboard/documents/${documentId}/summary`;
     } catch (error) {
       console.error(error);
-
-      alert("Gagal membuat summary");
+      addToast({
+        type: "error",
+        title: "Gagal Membuat Summary",
+        description: error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.",
+      });
     } finally {
       setLoading(false);
     }
@@ -54,11 +68,22 @@ export default function GenerateSummaryButton({
     <Button
       onClick={handleGenerate}
       disabled={loading}
-      className={fullWidth ? "mt-auto w-full" : undefined}
+      className={cn(
+        "bg-blue-600 hover:bg-blue-700",
+        fullWidth ? "mt-auto w-full" : ""
+      )}
     >
-      {loading
-        ? "Generating..."
-        : "Generate Summary"}
+      {loading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Generating...
+        </>
+      ) : (
+        <>
+          <Sparkles className="mr-2 h-4 w-4" />
+          Generate Summary
+        </>
+      )}
     </Button>
   );
 }

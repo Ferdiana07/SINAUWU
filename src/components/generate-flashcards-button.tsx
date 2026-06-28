@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast";
+import { Layers, Loader2 } from "lucide-react";
 
 interface Props {
   documentId: string;
@@ -14,48 +16,49 @@ export default function GenerateFlashcardsButton({
   fullWidth = false,
 }: Props) {
   const router = useRouter();
-  const [loading, setLoading] =
-    useState(false);
+  const { addToast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   async function handleGenerate() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "/api/flashcards",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            documentId,
-          }),
-        }
-      );
+      addToast({
+        type: "info",
+        title: "Generating Flashcards",
+        description: "AI sedang membuat flashcard untukmu...",
+      });
 
-      const data =
-        await response.json();
+      const response = await fetch("/api/flashcards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          documentId,
+        }),
+      });
 
-      console.log(data);
+      const data = await response.json();
 
-      if (data.success) {
-        router.refresh();
-        alert(
-          `Flashcards berhasil dibuat! Jumlah: ${data.count}`
-        );
-      } else {
-        alert(
-          "Gagal membuat flashcards"
-        );
+      if (!data.success) {
+        throw new Error(data.error || "Failed to generate flashcards");
       }
+
+      addToast({
+        type: "success",
+        title: "Flashcards Berhasil Dibuat!",
+        description: `${data.count} flashcard sudah siap untuk dipelajari.`,
+      });
+
+      router.refresh();
     } catch (error) {
       console.error(error);
-
-      alert(
-        "Gagal membuat flashcards"
-      );
+      addToast({
+        type: "error",
+        title: "Gagal Membuat Flashcards",
+        description: error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.",
+      });
     } finally {
       setLoading(false);
     }
@@ -68,9 +71,17 @@ export default function GenerateFlashcardsButton({
       disabled={loading}
       className={fullWidth ? "mt-auto w-full" : undefined}
     >
-      {loading
-        ? "Generating..."
-        : "Generate Flashcards"}
+      {loading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Generating...
+        </>
+      ) : (
+        <>
+          <Layers className="mr-2 h-4 w-4" />
+          Generate Flashcards
+        </>
+      )}
     </Button>
   );
 }

@@ -3,14 +3,22 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TopHeader } from "@/components/top-header";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft,
+  FileText,
+  BookOpen,
+  CheckCircle2,
+  Sparkles,
+  Lightbulb,
+} from "lucide-react";
 
 interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 }
 
-export default async function DocumentPage({ params }: PageProps) {
+export default async function SummaryPage({ params }: PageProps) {
   const { id } = await params;
 
   const document = await prisma.document.findUnique({
@@ -23,60 +31,151 @@ export default async function DocumentPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.08),_transparent_45%)] p-6">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
-          <Button variant="ghost" asChild className="-ml-2 mb-3">
-            <Link href={`/dashboard/documents/${document.id}`}>← Kembali</Link>
+    <div className="space-y-6">
+      <TopHeader
+        title="Rangkuman"
+        description={document.title}
+        actions={
+          <Button variant="outline" asChild>
+            <Link href={`/dashboard/documents/${document.id}`}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Kembali
+            </Link>
           </Button>
-          <h1 className="text-3xl font-bold tracking-tight">{document.title}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Ringkasan materi yang telah dibuat untuk dokumen ini.</p>
-        </div>
+        }
+      />
 
-        {!document.summary ? (
-          <Card className="border-dashed shadow-sm">
-            <CardContent className="p-8 text-center">
-              <p className="text-lg font-medium">Summary belum dibuat</p>
-              <p className="mt-2 text-sm text-muted-foreground">Buat rangkuman dari dokumen ini untuk memulai belajar dengan lebih cepat.</p>
+      {!document.summary ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
+              <FileText className="h-10 w-10 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold">Summary belum dibuat</h3>
+            <p className="mt-2 max-w-sm text-center text-muted-foreground">
+              Buat rangkuman dari dokumen ini untuk memulai belajar dengan lebih cepat.
+            </p>
+            <Button asChild className="mt-6">
+              <Link href={`/dashboard/documents/${document.id}`}>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Generate Summary
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {/* Short Summary */}
+          <Card className="border-border/50">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/25">
+                  <BookOpen className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Ringkasan Singkat</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Poin utama dari dokumen
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-6 dark:from-blue-950/20 dark:to-cyan-950/20">
+                <p className="leading-relaxed text-foreground">
+                  {document.summary.shortSummary}
+                </p>
+              </div>
             </CardContent>
           </Card>
-        ) : (
-          <div className="space-y-4">
-            <Card className="border-0 shadow-sm">
-              <CardHeader>
-                <CardTitle>Ringkasan Singkat</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="leading-7 text-slate-700">{document.summary.shortSummary}</p>
-              </CardContent>
-            </Card>
 
-            <Card className="border-0 shadow-sm">
-              <CardHeader>
-                <CardTitle>Penjelasan Lengkap</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="leading-7 text-slate-700">{document.summary.detailedSummary || "Tidak ada penjelasan lengkap yang tersedia."}</p>
-              </CardContent>
-            </Card>
+          {/* Detailed Summary */}
+          <Card className="border-border/50">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 shadow-lg shadow-violet-500/25">
+                  <FileText className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Penjelasan Lengkap</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Penjelasan detail dari materi
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {document.summary.detailedSummary ? (
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <p className="leading-relaxed whitespace-pre-wrap">
+                    {document.summary.detailedSummary}
+                  </p>
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border bg-muted/30 p-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Tidak ada penjelasan lengkap yang tersedia.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-            <Card className="border-0 shadow-sm">
-              <CardHeader>
-                <CardTitle>Point Penting</CardTitle>
+          {/* Key Points */}
+          {document.summary.keyPoints && (
+            <Card className="border-border/50">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
+                    <Lightbulb className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Point Penting</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Poin-poin kunci yang perlu diingat
+                    </p>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                {document.summary.keyPoints ? (
-                  <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
-                    {JSON.stringify(document.summary.keyPoints, null, 2)}
-                  </pre>
-                ) : (
-                  <p className="text-sm text-muted-foreground">Tidak ada point penting yang tersedia.</p>
-                )}
+                <div className="space-y-3">
+                  {Array.isArray(document.summary.keyPoints) ? (
+                    (document.summary.keyPoints as string[]).map((point, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-3 rounded-xl bg-amber-50 p-4 dark:bg-amber-950/20"
+                      >
+                        <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-200 text-xs font-bold text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                          {index + 1}
+                        </div>
+                        <p className="text-sm leading-relaxed">{point}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <pre className="overflow-x-auto rounded-xl bg-muted p-4 text-sm">
+                      {JSON.stringify(document.summary.keyPoints, null, 2)}
+                    </pre>
+                  )}
+                </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* Meta Info */}
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Rangkuman dibuat pada {document.summary.createdAt.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}</span>
+            </div>
           </div>
-        )}
-      </div>
-    </main>
+        </div>
+      )}
+    </div>
   );
 }
