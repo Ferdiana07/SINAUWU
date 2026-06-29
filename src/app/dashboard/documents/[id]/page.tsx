@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { TopHeader } from "@/components/top-header";
 import GenerateSummaryButton, { RegenerateSummaryButton } from "@/components/generate-summary-button";
@@ -7,6 +8,7 @@ import GenerateFlashcardsButton, { RegenerateFlashcardsButton } from "@/componen
 import GenerateQuizButton, { RegenerateQuizButton } from "@/components/generate-quiz-button";
 import DeleteDocumentButton from "@/components/delete-document-button";
 import { FileText, Calendar } from "lucide-react";
+import { redirect, notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +17,13 @@ export default async function DocumentDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
   const { id } = await params;
 
   const document = await prisma.document.findUnique({
@@ -26,26 +35,9 @@ export default async function DocumentDetailPage({
     },
   });
 
-  if (!document) {
-    return (
-      <div className="space-y-6">
-        <TopHeader title="Dokumen Tidak Ditemukan" />
-        <Card className="border-destructive/50">
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <h3 className="text-xl font-semibold">Dokumen tidak ditemukan</h3>
-            <p className="mt-2 text-center text-muted-foreground">
-              Dokumen yang kamu cari tidak ada atau sudah dihapus.
-            </p>
-            <Link
-              href="/dashboard/documents"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Kembali ke Dokumen
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  // Document not found or doesn't belong to user
+  if (!document || document.userId !== userId) {
+    notFound();
   }
 
   const formatDate = (date: Date) => {

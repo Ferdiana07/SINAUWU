@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +17,13 @@ interface PageProps {
 }
 
 export default async function FlashcardsPage({ params }: PageProps) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
   const { id } = await params;
 
   const document = await prisma.document.findUnique({
@@ -23,7 +31,8 @@ export default async function FlashcardsPage({ params }: PageProps) {
     include: { flashcards: true },
   });
 
-  if (!document) {
+  // Document not found or doesn't belong to user
+  if (!document || document.userId !== userId) {
     notFound();
   }
 
@@ -99,15 +108,15 @@ export default async function FlashcardsPage({ params }: PageProps) {
               <h3 className="mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-muted-foreground">TIPS BELAJAR</h3>
               <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-violet-500 flex-shrink-0">•</span>
+                  <span className="text-violet-500 shrink-0">•</span>
                   <span>Baca pertanyaan dan coba jawab sendiri sebelum membalik kartu</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-violet-500 flex-shrink-0">•</span>
+                  <span className="text-violet-500 shrink-0">•</span>
                   <span>Ulangi kartu yang salah beberapa kali sampai hafal</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-violet-500 flex-shrink-0">•</span>
+                  <span className="text-violet-500 shrink-0">•</span>
                   <span>Belajar dalam sesi pendek lebih efektif daripada satu sesi panjang</span>
                 </li>
               </ul>

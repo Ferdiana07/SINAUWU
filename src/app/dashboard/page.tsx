@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TopHeader } from "@/components/top-header";
 import Link from "next/link";
@@ -16,11 +17,21 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Sparkline } from "@/components/charts";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // Fetch all data
+  // Get authenticated user
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
+
+  // Fetch user-specific data
   const [
     documents,
     totalDocuments,
@@ -30,6 +41,7 @@ export default async function DashboardPage() {
     recentQuizAttempts,
   ] = await Promise.all([
     prisma.document.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
       take: 5,
       include: {
@@ -37,11 +49,12 @@ export default async function DashboardPage() {
         quizzes: { include: { attempts: { take: 1, orderBy: { createdAt: "desc" } } } },
       },
     }),
-    prisma.document.count(),
-    prisma.flashcard.count(),
-    prisma.quiz.count(),
-    prisma.summary.count(),
+    prisma.document.count({ where: { userId } }),
+    prisma.flashcard.count({ where: { document: { userId } } }),
+    prisma.quiz.count({ where: { document: { userId } } }),
+    prisma.summary.count({ where: { document: { userId } } }),
     prisma.quizAttempt.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
       take: 5,
       include: { quiz: { include: { document: true } } },
@@ -49,7 +62,9 @@ export default async function DashboardPage() {
   ]);
 
   // Calculate average quiz score
-  const allAttempts = await prisma.quizAttempt.findMany();
+  const allAttempts = await prisma.quizAttempt.findMany({
+    where: { userId },
+  });
   const averageScore = allAttempts.length > 0
     ? Math.round(allAttempts.reduce((acc, a) => acc + (a.score / 10) * 100, 0) / allAttempts.length)
     : 0;
@@ -64,7 +79,7 @@ export default async function DashboardPage() {
     {
       title: "Total Dokumen",
       value: totalDocuments,
-      change: totalDocuments > 0 ? "documents" : "Mulai upload",
+      change: totalDocuments > 0 ? "dokumen" : "Mulai upload",
       icon: FileText,
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "bg-gradient-to-br from-blue-500/10 to-cyan-500/10",
@@ -107,7 +122,7 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       {/* Welcome Header */}
       <TopHeader
-        title="Selamat Datang di Dashboard"
+        title={`Selamat Datang${session.user.name ? `, ${session.user.name}` : ""}!`}
         description="Kelola semua materi belajar dan lacak progress belajarmu"
       />
 
@@ -126,7 +141,7 @@ export default async function DashboardPage() {
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground">{stat.title}</p>
                     <p className="text-2xl sm:text-3xl font-bold tracking-tight">{stat.value}</p>
                     <div className="flex items-center gap-2">
-                      {stat.change.includes("rata-rata") || stat.change === "documents" ? (
+                      {stat.change.includes("rata-rata") ? (
                         <TrendingUp className="h-3 w-3 text-emerald-500 flex-shrink-0" />
                       ) : null}
                       <span className="text-xs text-muted-foreground truncate">{stat.change}</span>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,13 @@ interface PageProps {
 }
 
 export default async function SummaryPage({ params }: PageProps) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
   const { id } = await params;
 
   const document = await prisma.document.findUnique({
@@ -26,7 +34,8 @@ export default async function SummaryPage({ params }: PageProps) {
     include: { summary: true },
   });
 
-  if (!document) {
+  // Document not found or doesn't belong to user
+  if (!document || document.userId !== userId) {
     notFound();
   }
 
@@ -52,14 +61,14 @@ export default async function SummaryPage({ params }: PageProps) {
             <div className="mb-4 sm:mb-6 flex h-16 sm:h-20 w-16 sm:w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
               <FileText className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold">Summary belum dibuat</h3>
+            <h3 className="text-lg sm:text-xl font-semibold">Rangkuman belum dibuat</h3>
             <p className="mt-2 max-w-sm text-center text-muted-foreground text-sm px-4">
               Buat rangkuman dari dokumen ini untuk memulai belajar dengan lebih cepat.
             </p>
             <Button asChild className="mt-4 sm:mt-6 text-sm">
               <Link href={`/dashboard/documents/${document.id}`}>
                 <Sparkles className="mr-2 h-4 w-4" />
-                Generate Summary
+                Generate Rangkuman
               </Link>
             </Button>
           </CardContent>
@@ -146,7 +155,7 @@ export default async function SummaryPage({ params }: PageProps) {
                         key={index}
                         className="flex items-start gap-2 sm:gap-3 rounded-xl bg-amber-50 p-3 sm:p-4 dark:bg-amber-950/20"
                       >
-                        <div className="flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-200 text-[10px] sm:text-xs font-bold text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                        <div className="flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-amber-200 text-[10px] sm:text-xs font-bold text-amber-800 dark:bg-amber-900 dark:text-amber-200">
                           {index + 1}
                         </div>
                         <p className="text-xs sm:text-sm leading-relaxed">{point}</p>
@@ -165,7 +174,7 @@ export default async function SummaryPage({ params }: PageProps) {
           {/* Meta Info */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 flex-shrink-0" />
+              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 shrink-0" />
               <span>Rangkuman dibuat pada {document.summary.createdAt.toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",

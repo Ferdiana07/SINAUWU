@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +21,13 @@ interface PageProps {
 }
 
 export default async function QuizPage({ params }: PageProps) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
   const { id } = await params;
 
   const document = await prisma.document.findUnique({
@@ -39,7 +47,8 @@ export default async function QuizPage({ params }: PageProps) {
     },
   });
 
-  if (!document) {
+  // Document not found or doesn't belong to user
+  if (!document || document.userId !== userId) {
     notFound();
   }
 
