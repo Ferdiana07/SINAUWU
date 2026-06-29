@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -12,9 +13,12 @@ import {
   Sparkles,
   Menu,
   X,
+  LogOut,
+  User,
 } from "lucide-react";
 import { SidebarStats } from "@/components/sidebar-stats";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 // Logo SVG - Robot with Book
 function LogoIcon() {
@@ -121,6 +125,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     setIsMounted(true);
@@ -264,11 +269,39 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="mt-auto border-t border-border/50 px-4 py-4">
+          {/* User Info */}
+          {session?.user && (
+            <div className="mb-3 flex items-center gap-3 rounded-lg bg-muted/50 p-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600">
+                <User className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {session.user.name || "User"}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {session.user.email}
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
               Powered by AI
             </p>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                title="Logout"
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </aside>

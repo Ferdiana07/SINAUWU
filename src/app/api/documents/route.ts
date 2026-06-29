@@ -1,11 +1,9 @@
-import { getDevUser } from "@/lib/dev-user";
 import { prisma } from "@/lib/prisma";
-
-
+import { requireAuth } from "@/lib/get-current-user";
 
 export async function GET() {
   try {
-    const user = await getDevUser();
+    const user = await requireAuth();
 
     const documents = await prisma.document.findMany({
       where: {
@@ -22,6 +20,17 @@ export async function GET() {
       data: documents,
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return Response.json(
+        {
+          ok: false,
+          message: "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
     return Response.json(
       {
         ok: false,
@@ -51,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await getDevUser();
+    const user = await requireAuth();
 
     const document = await prisma.document.create({
       data: {
@@ -73,6 +82,17 @@ export async function POST(request: Request) {
       },
     );
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return Response.json(
+        {
+          ok: false,
+          message: "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
     return Response.json(
       {
         ok: false,

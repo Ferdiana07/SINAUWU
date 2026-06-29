@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/get-current-user";
 
 interface RouteProps {
   params: Promise<{
@@ -11,6 +12,7 @@ export async function DELETE(
   { params }: RouteProps
 ) {
   try {
+    const user = await requireAuth();
     const { id } = await params;
 
     const document =
@@ -31,6 +33,18 @@ export async function DELETE(
       );
     }
 
+    // Verify document belongs to current user
+    if (document.userId !== user.id) {
+      return Response.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
     await prisma.document.delete({
       where: {
         id,
@@ -41,6 +55,16 @@ export async function DELETE(
       success: true,
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return Response.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
     console.error(error);
 
     return Response.json(
