@@ -1,13 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TopHeader } from "@/components/top-header";
 import Link from "next/link";
 import {
   FileText,
   Sparkles,
   Layers,
-  ClipboardList,
   TrendingUp,
   Clock,
   Upload,
@@ -17,6 +15,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Sparkline } from "@/components/charts";
+import { WelcomeBanner } from "@/components/welcome-banner";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -120,11 +119,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
-      <TopHeader
-        title={`Selamat Datang${session.user.name ? `, ${session.user.name}` : ""}!`}
-        description="Kelola semua materi belajar dan lacak progress belajarmu"
-      />
+      {/* Welcome Banner */}
+      <WelcomeBanner />
 
       {/* Stats Cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

@@ -33,7 +33,9 @@ SINAUWU adalah aplikasi web modern yang membantu pelajar mengubah materi kuliah 
 - **Riwayat Kuis** - Lacak performa kamu dari waktu ke waktu
 
 ### 🔐 Autentikasi
-- **Login Aman** - Sistem autentikasi berbasis JWT
+- **Login dengan Google** - Opsi login cepat dengan akun Google
+- **Login dengan Email** - Login tradisional dengan email dan password
+- **Registrasi** - Buat akun baru dengan mudah
 - **Data Pribadi** - Setiap user punya penyimpanan data yang terisolasi
 - **Manajemen Sesi** - Route terproteksi dengan middleware
 
@@ -129,6 +131,49 @@ npx prisma db push
 
 # Jalankan development server
 npm run dev
+```
+
+### Environment Variables
+
+Buat file `.env` dengan konfigurasi berikut:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/sinauwu"
+
+# AI Services (dapat dari Google AI Studio)
+GEMINI_API_KEY="your-gemini-api-key"
+
+# Autentikasi
+AUTH_SECRET="generate-with-openssl-rand-base64-32"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth (opsional - untuk login dengan Google)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+### Setup Google OAuth (Opsional)
+
+Jika ingin mengaktifkan login dengan Google:
+
+1. Buka [Google Cloud Console](https://console.cloud.google.com/)
+2. Buat project baru atau pilih project yang ada
+3. Buka **APIs & Services** → **OAuth consent screen**
+4. Pilih **External** → Klik **Create**
+5. Isi informasi aplikasi (nama, email, dll)
+6. Klik **Add or Remove Scopes** → Tambahkan:
+   - `../auth/userinfo.email`
+   - `../auth/userinfo.profile`
+7. Klik **Save and Continue**
+8. Buka **Credentials** → Klik **Create Credentials** → **OAuth client ID**
+9. Application type: **Web application**
+10. Tambahkan Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+11. Copy **Client ID** dan **Client Secret** ke file `.env`
+
+```env
+GOOGLE_CLIENT_ID="12345-xxxxx.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="GOCSPX-xxxxx"
 ```
 
 ## 🎯 API Endpoints
