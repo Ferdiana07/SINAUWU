@@ -1,239 +1,279 @@
-# SINAUWU
+# 🎓 SINAUWU - AI-Powered Learning Assistant
 
-SINAUWU adalah web app berbasis AI untuk membantu mahasiswa mengubah materi kuliah dalam bentuk PDF menjadi rangkuman, flashcard, dan kuis latihan.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/PostgreSQL-16.0-336791?style=flat-square&logo=postgresql" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Prisma-7.0-2D3748?style=flat-square" alt="Prisma">
+  <img src="https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind">
+</p>
 
-## Tech Stack
+> Transform your study materials into interactive learning experiences with AI
 
-- Next.js 16 (App Router)
-- TypeScript
-- Tailwind CSS
-- PostgreSQL
-- Prisma ORM
-- NextAuth.js v5 (Authentication)
-- Gemini API
-- PDF Parser (unpdf)
+SINAUWU is a modern web application that helps students transform PDF lecture materials into AI-generated summaries, flashcards, and practice quizzes. Built with cutting-edge technology for an optimized learning experience.
 
-## Fitur
+![SINAUWU Preview](https://via.placeholder.com/1200x600/1e1e2e/93C5FD?text=SINAUWU+AI+Learning+Assistant)
 
-- **Upload PDF** - Upload materi kuliah dalam format PDF
-- **Rangkuman AI** - Generate rangkuman otomatis dari PDF
-- **Flashcard** - Buat kartu tanya-jawab untuk belajar
-- **Kuis** - Latihan soal pilihan ganda berdasarkan materi
-- **Dashboard** - Kelola semua dokumen dan lihat progres belajar
-- **Autentikasi** - Login dan register untuk akses personal
+## ✨ Features
 
-## Sistem Autentikasi
+### 📄 PDF Processing
+- **Smart Upload** - Drag & drop or browse to upload PDF files
+- **Text Extraction** - Automatically extract text content from PDF documents
+- **Multi-format Support** - Handle various PDF layouts and structures
 
-### Gambaran Umum
+### 🤖 AI-Powered Features
 
-SINAUWU menggunakan **NextAuth.js v5** dengan strategi **JWT (JSON Web Token)** untuk autentikasi. Setiap user memiliki data sendiri yang terisolasi.
+| Feature | Description |
+|---------|-------------|
+| **Smart Summaries** | AI generates concise, comprehensive summaries from lengthy materials |
+| **Flashcards** | Automatically create Q&A flashcards for effective memorization |
+| **Practice Quiz** | Generate multiple-choice quizzes to test your understanding |
 
-### Alur Autentikasi
+### 📊 Dashboard
+- **Progress Tracking** - Monitor your documents, quizzes, and scores
+- **Document Library** - Organized access to all uploaded materials
+- **Quiz History** - Track your performance over time
+
+### 🔐 Authentication
+- **Secure Login** - JWT-based authentication system
+- **Personal Data** - Each user has isolated, private data storage
+- **Session Management** - Protected routes with middleware
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Next.js 16** - React framework with App Router, Server Components
+- **React 19** - Latest React with improved performance
+- **TypeScript** - Type-safe development
+- **Tailwind CSS 4** - Modern utility-first styling
+- **shadcn/ui** - Beautiful, accessible components
+- **Lucide React** - Consistent icon library
+
+### Backend
+- **Next.js API Routes** - Serverless API endpoints
+- **Prisma ORM** - Type-safe database access
+- **NextAuth.js v5** - Authentication with JWT sessions
+
+### Database
+- **PostgreSQL** - Robust relational database
+- **Prisma Migrate** - Version-controlled schema migrations
+
+### AI Integration
+- **Gemini API** - Google's advanced AI for content generation
+- **PDF Parser** - Extract text from PDF documents
+
+## 📁 Project Structure
 
 ```
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│   Landing   │ ──── │    Login    │ ──── │  Dashboard  │
-│    Page     │      │    Page     │      │   (User)   │
-└─────────────┘      └─────────────┘      └─────────────┘
-      │                    │                     │
-      │                    ▼                     │
-      │              ┌─────────────┐              │
-      │              │  Register   │              │
-      │              │    Page     │              │
-      │              └─────────────┘              │
-      │                    │                     │
-      └────────────────────┴─────────────────────┘
-                            │
-                            ▼
-                    ┌─────────────┐
-                    │  PostgreSQL │
-                    │   Database  │
-                    └─────────────┘
+sinauwu/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API Routes
+│   │   │   ├── auth/          # Authentication endpoints
+│   │   │   ├── documents/     # Document management
+│   │   │   ├── flashcards/    # Flashcard operations
+│   │   │   ├── quizzes/       # Quiz management
+│   │   │   ├── stats/         # Statistics endpoint
+│   │   │   └── summary/       # Summary generation
+│   │   ├── dashboard/         # Protected dashboard pages
+│   │   ├── login/             # Login page
+│   │   └── register/          # Registration page
+│   │
+│   ├── components/             # React Components
+│   │   ├── ui/               # Reusable UI components
+│   │   ├── charts.tsx        # Statistics visualization
+│   │   ├── sidebar.tsx        # Navigation sidebar
+│   │   ├── flashcard-item.tsx # Flashcard component
+│   │   ├── quiz-player.tsx    # Quiz interface
+│   │   └── ...
+│   │
+│   ├── lib/                   # Utilities & Configuration
+│   │   ├── auth.ts           # NextAuth configuration
+│   │   ├── auth-config.ts    # Auth implementation
+│   │   ├── prisma.ts         # Database client
+│   │   └── utils.ts          # Helper functions
+│   │
+│   ├── middleware.ts          # Route protection
+│   └── types/                 # TypeScript definitions
+│
+├── prisma/
+│   └── schema.prisma          # Database schema
+│
+├── public/                    # Static assets
+└── package.json
 ```
 
-### Proses Login
-
-1. User mengakses `/login`
-2. Masukkan email dan password
-3. Sistem memverifikasi credentials:
-   - Cek email ada di database
-   - Bandingkan password dengan hash di database (bcrypt)
-4. Jika berhasil, NextAuth membuat JWT token
-5. User diarahkan ke `/dashboard`
-6. Token JWT tersimpan di cookie
-
-### Proses Register
-
-1. User mengakses `/register`
-2. Masukkan nama, email, dan password
-3. Sistem memvalidasi:
-   - Email belum terdaftar
-   - Password minimal 6 karakter
-4. Password di-hash menggunakan bcrypt (10 rounds)
-5. Data user disimpan ke PostgreSQL
-6. User diarahkan ke `/login`
-
-### Proteksi Route
-
-Middleware otomatis melindungi route:
-
-| Route | Status | Keterangan |
-|-------|--------|------------|
-| `/` | Public | Landing page |
-| `/login` | Public | Halaman login |
-| `/register` | Public | Halaman registrasi |
-| `/dashboard/*` | Protected | Perlu login, redirect ke `/login` jika belum |
-
-### Struktur Database untuk Auth
+## 🔐 Database Schema
 
 ```prisma
 model User {
   id        String   @id @default(cuid())
   name      String?
   email     String   @unique
-  password  String   // hashed with bcrypt
-  image     String?
-  createdAt DateTime @default(now())
-
+  password  String
   documents Document[]
   attempts  QuizAttempt[]
 }
 
-model Account {
-  id                String @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  // ... OAuth fields
+model Document {
+  id        String         @id @default(cuid())
+  userId    String
+  title     String
+  fileName  String
+  rawText   String?
+  status    DocumentStatus @default(UPLOADED)
+  summary    Summary?
+  flashcards Flashcard[]
+  quizzes    Quiz[]
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
+model Quiz {
+  id         String   @id @default(cuid())
+  documentId String
+  title      String
+  questions  QuizQuestion[]
+  attempts   QuizAttempt[]
 }
 ```
 
-### File Penting untuk Auth
+## 🚀 Getting Started
 
-```
-src/
-├── app/
-│   ├── api/auth/[...nextauth]/route.ts  # NextAuth handlers
-│   ├── api/auth/register/route.ts        # Register API
-│   ├── login/page.tsx                     # Login page
-│   └── register/page.tsx                  # Register page
-├── components/
-│   ├── auth-provider.tsx                   # SessionProvider wrapper
-│   └── sidebar.tsx                        # User info & logout
-├── lib/
-│   ├── auth.ts                            # NextAuth configuration
-│   └── get-current-user.ts                # Get authenticated user
-├── middleware.ts                          # Route protection
-└── types/
-    └── next-auth.d.ts                     # TypeScript types
-```
+### Prerequisites
 
-## Cara Menjalankan Project
+- Node.js 18+
+- PostgreSQL 14+
+- npm or yarn
 
-### 1. Install Dependencies
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd sinauwu
+
+# Install dependencies
 npm install
-```
 
-### 2. Setup Environment Variables
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your database URL and API keys
 
- Buat file `.env` dengan konfigurasi berikut:
-
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/sinauwu_db"
-
-# API Keys
-GEMINI_API_KEY="your-gemini-api-key"
-
-# Authentication (generate dengan: openssl rand -base64 32)
-AUTH_SECRET="your-auth-secret-here"
-NEXTAUTH_URL="http://localhost:3000"
-```
-
-### 3. Setup Database
-
-```bash
-# Generate Prisma client
+# Initialize database
 npx prisma generate
-
-# Push schema ke database
 npx prisma db push
-```
 
-### 4. Jalankan Development Server
-
-```bash
+# Start development server
 npm run dev
 ```
 
-Buka http://localhost:3000 di browser.
+### Environment Variables
 
-## Login dengan Akun Default (Development)
+Create a `.env` file with the following:
 
-Jika ingin testing tanpa register, bisa gunakan akun development:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/sinauwu"
 
-```bash
-# Create dev user
-npx tsx src/scripts/create-dev-user.ts
+# AI Services (get from Google AI Studio)
+GEMINI_API_KEY="your-gemini-api-key"
+
+# Authentication
+AUTH_SECRET="generate-with-openssl-rand-base64-32"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
-Atau buat manual via Prisma Studio:
+## 🎯 API Endpoints
 
-```bash
-npx prisma studio
-```
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/[...nextauth]` | GET, POST | NextAuth handlers |
+| `/api/auth/register` | POST | User registration |
+| `/api/documents` | GET, POST | List/Create documents |
+| `/api/documents/[id]` | GET, DELETE | Get/Delete document |
+| `/api/flashcards` | GET, POST | List/Create flashcards |
+| `/api/quizzes` | GET, POST | List/Create quizzes |
+| `/api/summary` | POST | Generate summary |
+| `/api/stats` | GET | Dashboard statistics |
 
-## Fitur Utama
+## 🎨 Design System
+
+### Color Palette
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary | `#8B5CF6` | Main actions, highlights |
+| Secondary | `#3B82F6` | Links, secondary actions |
+| Success | `#10B981` | Success states |
+| Warning | `#F59E0B` | Warning states |
+| Background | `#09090B` | Page background |
+| Foreground | `#FAFAFA` | Text color |
+
+### Typography
+
+- **Font Family**: Inter + Geist Sans
+- **Monospace**: Geist Mono
+
+## 📱 Screenshots
+
+### Landing Page
+Modern, responsive landing page with feature highlights and call-to-action buttons.
 
 ### Dashboard
+Clean dashboard showing:
+- Statistics cards
+- Recent documents
+- Quick actions
 
-- Statistik belajar (total dokumen, kuis, flashcard)
-- Progress dan rata-rata skor
-- Akses ke semua fitur
+### Quiz Interface
+Interactive quiz with:
+- Progress indicator
+- Multiple choice options
+- Instant feedback
 
-### Upload PDF
+### Flashcard Mode
+Flip-card interface for studying with navigation controls.
 
-- Drag & drop atau pilih file
-- Preview nama file
-- Ekstraksi teks otomatis
+## 🔒 Security Features
 
-### Rangkuman
+- **Password Hashing** - bcrypt with 10 salt rounds
+- **JWT Sessions** - Secure token-based authentication
+- **Protected Routes** - Middleware route protection
+- **SQL Injection Prevention** - Prisma ORM with parameterized queries
+- **CORS Protection** - Proper CORS configuration
 
-- Summary singkat
-- Poin-poin penting
-- Detail lengkap
+## 📈 Performance Optimizations
 
-### Flashcard
+- **Server Components** - Reduced client-side JavaScript
+- **Dynamic Imports** - Code splitting for better load times
+- **Image Optimization** - Next.js Image component
+- **Database Indexing** - Optimized Prisma queries
 
-- Kartu tanya-jawab
-- Mode belajar interaktif
-- Navigasi antar kartu
+## 🤝 Contributing
 
-### Quiz
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- Pilihan ganda otomatis
-- Koreksi instan
-- Simpan skor ke history
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Deployment
+## 📄 License
 
-Untuk production, pastikan:
+This project is open source and available under the [MIT License](LICENSE).
 
-1. Generate `AUTH_SECRET` yang aman
-2. Setup PostgreSQL database
-3. Set `NEXTAUTH_URL` ke URL production
-4. Build dan deploy:
-   ```bash
-   npm run build
-   npm start
-   ```
+## 👨‍💻 Author
+
+**Your Name**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourusername)
+
+---
+
+<p align="center">
+  Made with ❤️ for students who want to learn smarter
+</p>
+
+<p align="center">
+  <strong>SINAUWU</strong> - Belajar Lebih Pintar dengan AI
+</p>
