@@ -120,9 +120,9 @@ export default function RegisterPage() {
           </div>
 
           {/* Register Card - Glass 3D Effect */}
-          <Card className="relative overflow-hidden border-0 shadow-2xl shadow-violet-500/20">
+          <Card className="relative overflow-hidden border-0 shadow-2xl shadow-violet-500/20 glass3d">
             {/* Glass overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/20 backdrop-blur-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/20 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
 
             {/* Content */}

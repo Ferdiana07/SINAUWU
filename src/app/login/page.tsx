@@ -61,58 +61,39 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-100/50 via-purple-50/30 to-fuchsia-100/50 dark:from-violet-950/50 dark:via-purple-950/30 dark:to-fuchsia-950/50" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-400/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-purple-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: "1s" }} />
-      </div>
-
+    <main className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="relative z-10 p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-violet-600 transition-colors group">
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Kembali ke Beranda
+      <header className="p-4">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          Kembali
         </Link>
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-8 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-violet-500/40 rounded-xl blur-lg group-hover:bg-violet-500/60 transition-all duration-300" />
-              <LogoIcon className="relative h-12 w-12" />
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-              SINAUWU
-            </span>
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <LogoIcon className="w-10 h-10" />
+            <span className="text-2xl font-bold">SINAUWU</span>
           </div>
 
-          {/* Login Card - Glass 3D Effect */}
-          <Card className="relative overflow-hidden border-0 shadow-2xl shadow-violet-500/20">
-            {/* Glass overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/20 backdrop-blur-2xl" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
-
-            {/* Content */}
-            <CardHeader className="relative space-y-1 pb-4 pt-8 px-8">
-              <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Masuk
-              </CardTitle>
-              <CardDescription className="text-center text-muted-foreground">
+          {/* Login Card */}
+          <Card className="border">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-2xl text-center">Masuk</CardTitle>
+              <CardDescription className="text-center">
                 Masukkan email dan password untuk mengakses akunmu
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="relative space-y-5 px-8 pb-8">
-              {/* Google Sign In Button */}
+            <CardContent className="space-y-4">
+              {/* Google Sign In */}
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-11 font-medium border-2 glass-card hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:border-violet-300 dark:hover:border-violet-700 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full h-11"
                 onClick={handleGoogleSignIn}
                 disabled={isGoogleLoading}
               >
@@ -132,10 +113,10 @@ export default function LoginPage() {
               {/* Divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border/50" />
+                  <div className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background/80 px-3 text-muted-foreground backdrop-blur-sm">
+                  <span className="bg-background px-2 text-muted-foreground">
                     atau
                   </span>
                 </div>
@@ -144,13 +125,13 @@ export default function LoginPage() {
               {/* Email/Password Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm font-medium border border-red-200/50 dark:border-red-800/50">
+                  <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
                     {error}
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -159,12 +140,11 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={isLoading}
-                    className="h-11 glass-card border-border/50 focus:border-violet-500 focus:ring-violet-500/20 transition-all duration-300"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                  <Label htmlFor="password">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
@@ -174,28 +154,20 @@ export default function LoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={isLoading}
-                      className="h-11 pr-10 glass-card border-border/50 focus:border-violet-500 focus:ring-violet-500/20 transition-all duration-300"
+                      className="pr-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-violet-600 transition-colors p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                       tabIndex={-1}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full h-11 font-medium bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full h-11" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -209,7 +181,7 @@ export default function LoginPage() {
 
               <div className="text-center text-sm">
                 <span className="text-muted-foreground">Belum punya akun? </span>
-                <Link href="/register" className="text-violet-600 hover:text-violet-700 font-semibold hover:underline transition-colors">
+                <Link href="/register" className="text-primary hover:underline font-medium">
                   Daftar sekarang
                 </Link>
               </div>
