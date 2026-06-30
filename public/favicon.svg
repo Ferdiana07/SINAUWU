@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Book Pages -->
+  <path d="M50 75 Q35 72 25 68 Q20 66 18 60 Q20 55 25 54 Q35 52 50 55" fill="#A855F7"/>
+  <path d="M50 75 Q65 72 75 68 Q80 66 82 60 Q80 55 75 54 Q65 52 50 55" fill="#60A5FA"/>
+
+  <!-- Robot Head -->
+  <rect x="28" y="22" width="44" height="30" rx="6" fill="white"/>
+
+  <!-- Side Accents -->
+  <rect x="24" y="26" width="6" height="18" rx="2" fill="#93C5FD"/>
+  <rect x="70" y="26" width="6" height="18" rx="2" fill="#93C5FD"/>
+
+  <!-- Antenna -->
+  <rect x="48" y="10" width="4" height="14" rx="2" fill="#3B82F6"/>
+  <circle cx="50" cy="8" r="5" fill="#60A5FA"/>
+
+  <!-- Eyes -->
+  <ellipse cx="40" cy="35" rx="7" ry="8" fill="#93C5FD"/>
+  <ellipse cx="60" cy="35" rx="7" ry="8" fill="#93C5FD"/>
+  <circle cx="42" cy="33" r="3" fill="white"/>
+  <circle cx="62" cy="33" r="3" fill="white"/>
+
+  <!-- Smile -->
+  <path d="M38 44 Q50 54 62 44" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Stars -->
+  <path d="M15 20 L17 26 L23 26 L18.5 30 L20.5 36 L15 32 L9.5 36 L11.5 30 L7 26 L13 26 Z" fill="#A855F7"/>
+  <path d="M82 18 L84 23 L89 23 L85 26.5 L87 31 L82 28 L77 31 L79 26.5 L75 23 L80 23 Z" fill="#3B82F6"/>
+</svg>

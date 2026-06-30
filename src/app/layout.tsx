@@ -21,12 +21,9 @@ export const metadata: Metadata = {
   title: "SINAUWU - AI Learning Assistant",
   description: "Upload PDF materi kuliahmu, lalu ubah menjadi rangkuman, flashcard, dan kuis latihan dengan bantuan AI.",
   icons: {
-    icon: [
-      {
-        url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>",
-        type: "image/svg+xml",
-      },
-    ],
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 

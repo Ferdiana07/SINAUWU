@@ -1,72 +1,107 @@
-// Logo SVG - Robot with Book
+// Logo SVG - Robot with Book (Kartun-style)
 export function LogoIcon({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 100 80"
+      viewBox="0 0 100 100"
       className={className}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Book Base */}
+      {/* Book Pages - Left */}
       <path
-        d="M10 55 Q15 50 25 52 Q35 54 40 52 L40 75 Q35 78 25 76 Q15 74 10 75 Z"
-        fill="url(#logoBookLeftGradient)"
+        d="M50 75 Q35 72 25 68 Q20 66 18 60 Q20 55 25 54 Q35 52 50 55"
+        fill="url(#bookLeft)"
       />
+      {/* Book Pages - Right */}
       <path
-        d="M60 52 Q65 50 75 52 Q85 54 90 55 L90 75 Q85 74 75 76 Q65 78 60 75 Z"
-        fill="url(#logoBookRightGradient)"
+        d="M50 75 Q65 72 75 68 Q80 66 82 60 Q80 55 75 54 Q65 52 50 55"
+        fill="url(#bookRight)"
+      />
+      {/* Book Spine */}
+      <path
+        d="M50 55 Q50 70 50 75"
+        stroke="white"
+        strokeWidth="2"
+        fill="none"
+        opacity="0.5"
       />
 
-      {/* Robot Head */}
-      <rect x="25" y="20" width="50" height="35" rx="6" fill="white" />
-      <rect x="25" y="20" width="50" height="35" rx="6" fill="url(#logoHeadGradient)" fillOpacity="0.3" />
+      {/* Robot Body - Lower */}
+      <rect x="30" y="50" width="40" height="8" rx="3" fill="#E0E7FF" />
 
-      {/* Antenna */}
-      <rect x="48" y="8" width="4" height="14" rx="2" fill="#3B82F6" />
-      <circle cx="50" cy="6" r="4" fill="#3B82F6" />
+      {/* Robot Head - Main */}
+      <rect x="28" y="22" width="44" height="30" rx="6" fill="white" />
 
-      {/* Eyes */}
-      <circle cx="38" cy="33" r="6" fill="#93C5FD" />
-      <circle cx="62" cy="33" r="6" fill="#93C5FD" />
-      <circle cx="40" cy="31" r="2" fill="white" />
-      <circle cx="64" cy="31" r="2" fill="white" />
+      {/* Head Shadow/Depth */}
+      <rect x="28" y="22" width="44" height="30" rx="6" fill="url(#headShine)" fillOpacity="0.2" />
 
-      {/* Smile */}
+      {/* Side Accents */}
+      <rect x="24" y="26" width="6" height="18" rx="2" fill="#93C5FD" />
+      <rect x="70" y="26" width="6" height="18" rx="2" fill="#93C5FD" />
+
+      {/* Antenna Stem */}
+      <rect x="48" y="10" width="4" height="14" rx="2" fill="#3B82F6" />
+
+      {/* Antenna Ball */}
+      <circle cx="50" cy="8" r="5" fill="#60A5FA" />
+      <circle cx="48" cy="6" r="2" fill="white" fillOpacity="0.6" />
+
+      {/* Eyes - Large and Friendly */}
+      <ellipse cx="40" cy="35" rx="7" ry="8" fill="#93C5FD" />
+      <ellipse cx="60" cy="35" rx="7" ry="8" fill="#93C5FD" />
+
+      {/* Eye Highlights */}
+      <circle cx="42" cy="33" r="3" fill="white" />
+      <circle cx="62" cy="33" r="3" fill="white" />
+      <circle cx="38" cy="37" r="1.5" fill="white" fillOpacity="0.5" />
+      <circle cx="58" cy="37" r="1.5" fill="white" fillOpacity="0.5" />
+
+      {/* Smile - Big and Friendly */}
       <path
-        d="M40 43 Q50 52 60 43"
+        d="M38 44 Q50 54 62 44"
         stroke="#93C5FD"
-        strokeWidth="3"
+        strokeWidth="4"
         strokeLinecap="round"
         fill="none"
       />
 
-      {/* Blue accents on head sides */}
-      <rect x="21" y="25" width="6" height="20" rx="2" fill="#93C5FD" fillOpacity="0.5" />
-      <rect x="73" y="25" width="6" height="20" rx="2" fill="#93C5FD" fillOpacity="0.5" />
-
-      {/* Stars */}
+      {/* Stars - Sparkle Effects */}
+      {/* Left Star (Purple) */}
       <path
-        d="M15 18 L17 23 L22 23 L18 27 L20 32 L15 28 L10 32 L12 27 L8 23 L13 23 Z"
+        d="M15 20 L17 26 L23 26 L18.5 30 L20.5 36 L15 32 L9.5 36 L11.5 30 L7 26 L13 26 Z"
         fill="#A855F7"
+        className="animate-pulse"
       />
+      <circle cx="15" cy="28" r="1.5" fill="white" fillOpacity="0.8" />
+
+      {/* Right Star (Blue) */}
       <path
-        d="M78 15 L79.5 19 L84 19 L80.5 22 L82 26 L78 23 L74 26 L75.5 22 L72 19 L76.5 19 Z"
+        d="M82 18 L84 23 L89 23 L85 26.5 L87 31 L82 28 L77 31 L79 26.5 L75 23 L80 23 Z"
         fill="#3B82F6"
+        className="animate-pulse"
       />
+      <circle cx="82" cy="25" r="1.2" fill="white" fillOpacity="0.8" />
 
       {/* Gradients */}
       <defs>
-        <linearGradient id="logoBookLeftGradient" x1="10" y1="52" x2="40" y2="52">
+        {/* Book Left Page - Purple to Blue */}
+        <linearGradient id="bookLeft" x1="18" y1="54" x2="50" y2="75" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#A855F7" />
+          <stop offset="50%" stopColor="#8B5CF6" />
           <stop offset="100%" stopColor="#93C5FD" />
         </linearGradient>
-        <linearGradient id="logoBookRightGradient" x1="60" y1="52" x2="90" y2="52">
+
+        {/* Book Right Page - Blue to Dark Blue */}
+        <linearGradient id="bookRight" x1="82" y1="54" x2="50" y2="75" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#93C5FD" />
+          <stop offset="50%" stopColor="#60A5FA" />
           <stop offset="100%" stopColor="#3B82F6" />
         </linearGradient>
-        <linearGradient id="logoHeadGradient" x1="25" y1="20" x2="75" y2="55">
+
+        {/* Head Shine */}
+        <linearGradient id="headShine" x1="28" y1="22" x2="72" y2="52" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#93C5FD" />
-          <stop offset="100%" stopColor="#60A5FA" />
+          <stop offset="100%" stopColor="#3B82F6" />
         </linearGradient>
       </defs>
     </svg>

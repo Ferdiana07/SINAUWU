@@ -213,10 +213,7 @@ export function Sidebar() {
           )}
 
           <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
-              Powered by AI
-            </p>
-            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
               <ThemeToggle />
               <Button
                 variant="ghost"
