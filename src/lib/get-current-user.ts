@@ -44,3 +44,13 @@ export async function getCurrentUserFromAuth() {
     provider: session.user.provider,
   };
 }
+
+export async function requireAuth() {
+  const user = await getCurrentUserFromAuth();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  return user;
+}
