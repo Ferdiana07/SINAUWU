@@ -1,22 +1,26 @@
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { extractPdfText } from "@/lib/pdf/extract-text";
-import { getCurrentUser } from "@/lib/get-current-user";
+import { getToken } from "next-auth/jwt";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Get token directly from request
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
+  });
+
+  if (!token || !token.id) {
+    return Response.json(
+      { ok: false, message: "Unauthorized - please login again" },
+      { status: 401 }
+    );
+  }
+
   try {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return Response.json(
-        { ok: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
     const formData = await request.formData();
-
     const title = formData.get("title");
     const file = formData.get("file");
 
@@ -56,7 +60,7 @@ export async function POST(request: Request) {
 
     const document = await prisma.document.create({
       data: {
-        userId: user.id,
+        userId: token.id,
         title: documentTitle,
         fileName: file.name,
         rawText: extractedText,
@@ -68,7 +72,7 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("UPLOAD ERROR:", error);
+    console.error("[UPLOAD] ERROR:", error);
 
     return Response.json(
       {

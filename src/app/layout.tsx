@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ToastProvider } from "@/components/toast";
 import { AuthProvider } from "@/components/auth-provider";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -41,6 +42,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             {children}
+            <Analytics />
           </ToastProvider>
         </AuthProvider>
       </body>

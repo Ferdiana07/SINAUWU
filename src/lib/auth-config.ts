@@ -65,32 +65,56 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       // If signing in with Google, create user if not exists
       if (account?.provider === "google") {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-        });
-
-        if (!existingUser) {
-          // Create new user for Google OAuth
-          await prisma.user.create({
-            data: {
-              email: user.email!,
-              name: user.name || null,
-              image: user.image || null,
-              // No password for OAuth users
-            },
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
           });
+
+          if (!existingUser) {
+            // Create new user for Google OAuth
+            const newUser = await prisma.user.create({
+              data: {
+                email: user.email!,
+                name: user.name || null,
+                image: user.image || null,
+              },
+            });
+            user.id = newUser.id;
+          } else {
+            user.id = existingUser.id;
+          }
+        } catch (error) {
+          console.error("[AUTH] Error creating user:", error);
         }
       }
+
       return true;
     },
     async jwt({ token, user, account }) {
-      if (user) {
+      // For Google OAuth users, always fetch the latest user from database
+      if (account?.provider === "google" && token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email },
+          });
+
+          if (dbUser) {
+            token.id = dbUser.id;
+          }
+        } catch (error) {
+          console.error("[AUTH] Error fetching user from DB:", error);
+        }
+      }
+
+      // For credentials, use the user.id from authorize
+      if (user && account?.provider === "credentials") {
         token.id = user.id;
       }
-      // Save provider info for later use
+
       if (account) {
         token.provider = account.provider;
       }
+
       return token;
     },
     async session({ session, token }) {
@@ -98,6 +122,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.provider = token.provider as string;
       }
+
       return session;
     },
   },

@@ -1,15 +1,18 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/get-current-user";
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const token = await getToken({
+      req: request,
+      secret: process.env.AUTH_SECRET,
+    });
 
     // If not authenticated, return zeros
-    if (!user) {
+    if (!token || !token.id) {
       return NextResponse.json({
         totalDocuments: 0,
         totalQuizzes: 0,
@@ -21,16 +24,16 @@ export async function GET() {
 
     const [totalDocuments, totalQuizzes, totalFlashcards, recentAttempts] = await Promise.all([
       prisma.document.count({
-        where: { userId: user.id },
+        where: { userId: token.id as string },
       }),
       prisma.quiz.count({
-        where: { document: { userId: user.id } },
+        where: { document: { userId: token.id as string } },
       }),
       prisma.flashcard.count({
-        where: { document: { userId: user.id } },
+        where: { document: { userId: token.id as string } },
       }),
       prisma.quizAttempt.findMany({
-        where: { userId: user.id },
+        where: { userId: token.id as string },
         select: { score: true },
         orderBy: { createdAt: "desc" },
         take: 10,

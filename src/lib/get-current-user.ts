@@ -1,34 +1,46 @@
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getToken } from "next-auth/jwt";
+import { NextRequest } from "next/server";
 
 /**
- * Get current authenticated user from NextAuth session
- * Returns null if not authenticated
+ * Get current authenticated user from JWT token
+ * For API routes that have access to NextRequest
  */
-export async function getCurrentUser() {
+export async function getCurrentUser(request: NextRequest) {
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
+  });
+
+  if (!token) {
+    return null;
+  }
+
+  return {
+    id: token.id as string,
+    email: token.email as string,
+    name: token.name as string | null,
+    image: token.picture as string | null,
+    provider: token.provider as string | undefined,
+  };
+}
+
+/**
+ * Get current authenticated user from headers (for API routes)
+ * Alternative method using auth()
+ */
+export async function getCurrentUserFromAuth() {
+  const { auth } = await import("@/lib/auth");
   const session = await auth();
 
   if (!session?.user?.id) {
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  });
-
-  return user;
-}
-
-/**
- * Require authenticated user - throws if not authenticated
- * Use this in API routes that require authentication
- */
-export async function requireAuth() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
-  return user;
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name ?? null,
+    image: session.user.image ?? null,
+    provider: session.user.provider,
+  };
 }
