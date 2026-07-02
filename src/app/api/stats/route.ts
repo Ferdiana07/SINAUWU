@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const token = await getToken({
       req: request,
       secret: process.env.AUTH_SECRET,
+      cookieName: `__Secure-authjs.session-token`,
     });
 
     // If not authenticated, return zeros
