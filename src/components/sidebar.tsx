@@ -90,10 +90,10 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button - Only visible on mobile */}
+      {/* Mobile Menu Button - Only visible on mobile (RIGHT side) */}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="fixed left-4 top-4 z-30 rounded-lg bg-card p-2 shadow-lg ring-1 ring-border/50 lg:hidden"
+        className="fixed right-4 top-4 z-30 rounded-lg bg-card p-2 shadow-lg ring-1 ring-border/50 lg:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />

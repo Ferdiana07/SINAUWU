@@ -33,7 +33,7 @@ export function TopHeader({
   }
 
   return (
-    <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pl-10 lg:pl-0">
+    <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex-1">
         {/* Breadcrumbs */}
         <nav className="mb-2 flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
