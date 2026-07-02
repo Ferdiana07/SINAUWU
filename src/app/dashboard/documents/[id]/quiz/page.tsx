@@ -47,7 +47,6 @@ export default async function QuizPage({ params }: PageProps) {
     },
   });
 
-  // Document not found or doesn't belong to user
   if (!document || document.userId !== userId) {
     notFound();
   }
@@ -55,16 +54,14 @@ export default async function QuizPage({ params }: PageProps) {
   const quiz = document.quizzes[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <TopHeader
         title="Quiz"
         description={document.title}
         actions={
-          <Button variant="outline" asChild className="text-xs sm:text-sm">
+          <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/documents/${document.id}`}>
-              <ArrowLeft className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Kembali</span>
-              <span className="sm:hidden">Back</span>
+              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Link>
           </Button>
         }
@@ -72,67 +69,57 @@ export default async function QuizPage({ params }: PageProps) {
 
       {!quiz ? (
         <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-10 sm:py-16">
-            <div className="mb-4 sm:mb-6 flex h-16 sm:h-20 w-16 sm:w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10">
-              <ClipboardList className="h-8 w-8 sm:h-10 sm:w-10 text-emerald-600" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-semibold">Belum ada quiz</h3>
-            <p className="mt-2 max-w-sm text-center text-muted-foreground text-sm px-4">
+          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
+            <ClipboardList className="h-10 w-10 sm:h-12 sm:w-12 text-emerald-600 mb-3 sm:mb-4" />
+            <h3 className="text-base sm:text-lg font-semibold">Belum ada quiz</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground text-center mt-1 px-4">
               Buat quiz dari dokumen ini untuk menguji pemahamanmu.
             </p>
-            <Button asChild className="mt-4 sm:mt-6 text-sm">
+            <Button asChild size="sm" className="mt-4">
               <Link href={`/dashboard/documents/${document.id}`}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Generate Quiz
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Generate
               </Link>
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Quiz Player */}
-          <div className="lg:col-span-2">
-            <QuizPlayer
-              quizId={quiz.id}
-              questions={quiz.questions.map((question) => ({
-                id: question.id,
-                question: question.question,
-                optionA: question.optionA,
-                optionB: question.optionB,
-                optionC: question.optionC,
-                optionD: question.optionD,
-              }))}
-            />
-          </div>
+        <div className="space-y-4 sm:space-y-6">
+          {/* Quiz Player - Full width on mobile */}
+          <QuizPlayer
+            quizId={quiz.id}
+            questions={quiz.questions.map((question) => ({
+              id: question.id,
+              question: question.question,
+              optionA: question.optionA,
+              optionB: question.optionB,
+              optionC: question.optionC,
+              optionD: question.optionD,
+            }))}
+          />
 
-          {/* Quiz Info Sidebar */}
-          <div className="space-y-4">
-            {/* Quiz Stats */}
+          {/* Quiz Info - Below quiz on mobile, side on lg+ */}
+          <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
+            {/* Stats */}
             <Card className="border-border/50">
-              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
-                <CardTitle className="text-sm sm:text-base">Info Quiz</CardTitle>
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4">
+                <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  Info Quiz
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
-                    <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
+              <CardContent className="px-3 sm:px-4 space-y-3">
+                <p className="text-xs sm:text-sm font-medium truncate">{quiz.title}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-lg bg-muted/50 p-2 sm:p-3 text-center">
+                    <Target className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-blue-600 mb-1" />
+                    <p className="text-sm sm:text-base font-bold">{quiz.questions.length}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">Soal</p>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{quiz.title}</p>
-                    <p className="text-xs text-muted-foreground">{quiz.questions.length} pertanyaan</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                  <div className="rounded-lg bg-muted/50 p-2.5 sm:p-3 text-center">
-                    <Target className="mx-auto mb-1 h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                    <p className="text-base sm:text-lg font-bold">{quiz.questions.length}</p>
-                    <p className="text-xs text-muted-foreground">Soal</p>
-                  </div>
-                  <div className="rounded-lg bg-muted/50 p-2.5 sm:p-3 text-center">
-                    <Clock className="mx-auto mb-1 h-4 w-4 sm:h-5 sm:w-5 text-violet-600" />
-                    <p className="text-base sm:text-lg font-bold">{quiz.attempts.length}</p>
-                    <p className="text-xs text-muted-foreground">Attempt</p>
+                  <div className="rounded-lg bg-muted/50 p-2 sm:p-3 text-center">
+                    <Clock className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-violet-600 mb-1" />
+                    <p className="text-sm sm:text-base font-bold">{quiz.attempts.length}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">Attempt</p>
                   </div>
                 </div>
               </CardContent>
@@ -141,59 +128,42 @@ export default async function QuizPage({ params }: PageProps) {
             {/* Best Score */}
             {quiz.attempts.length > 0 && (
               <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 dark:border-emerald-800 dark:from-emerald-950/30 dark:to-teal-950/30">
-                <CardHeader className="pb-2 px-4 sm:px-6">
-                  <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                <CardHeader className="pb-2 px-3 sm:px-4">
+                  <CardTitle className="text-sm sm:text-base flex items-center gap-2">
                     <Trophy className="h-4 w-4 text-amber-500" />
                     Skor Terbaik
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4">
                   <p className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                     {Math.max(...quiz.attempts.map((a) => a.score))}/{quiz.questions.length}
                   </p>
-                  <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     {Math.round((Math.max(...quiz.attempts.map((a) => a.score)) / quiz.questions.length) * 100)}% benar
                   </p>
                 </CardContent>
               </Card>
             )}
 
-            {/* Quiz History */}
-            <Card className="border-border/50">
-              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
-                <CardTitle className="text-sm sm:text-base">Riwayat Pengerjaan</CardTitle>
+            {/* History */}
+            <Card className="border-border/50 lg:col-span-2">
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4">
+                <CardTitle className="text-sm sm:text-base">Riwayat</CardTitle>
               </CardHeader>
-              <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4">
                 {quiz.attempts.length === 0 ? (
-                  <div className="rounded-lg border border-dashed border-border bg-muted/30 p-4 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      Belum ada riwayat pengerjaan
-                    </p>
-                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground text-center py-2">
+                    Belum ada riwayat
+                  </p>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
                     {quiz.attempts.slice(0, 5).map((attempt, index) => {
                       const percentage = Math.round((attempt.score / quiz.questions.length) * 100);
                       return (
-                        <div
-                          key={attempt.id}
-                          className="flex items-center justify-between rounded-lg bg-muted/30 p-2.5 sm:p-3"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-muted text-[10px] sm:text-xs font-medium">
-                              {quiz.attempts.length - index}
-                            </span>
-                            <span className="text-xs sm:text-sm">
-                              {attempt.createdAt.toLocaleDateString("id-ID", {
-                                day: "numeric",
-                                month: "short",
-                              })}
-                            </span>
-                          </div>
-                          <Badge
-                            variant={percentage >= 70 ? "default" : "secondary"}
-                            className={percentage >= 70 ? "bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs" : "text-[10px] sm:text-xs"}
-                          >
+                        <div key={attempt.id}
+                          className="flex items-center gap-1.5 sm:gap-2 rounded-lg bg-muted/50 px-2 sm:px-3 py-1.5 sm:py-2">
+                          <span className="text-[10px] sm:text-xs font-medium">#{quiz.attempts.length - index}</span>
+                          <Badge variant={percentage >= 70 ? "default" : "secondary"} className="text-[10px] sm:text-xs">
                             {percentage}%
                           </Badge>
                         </div>
