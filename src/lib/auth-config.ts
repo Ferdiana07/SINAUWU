@@ -1,5 +1,5 @@
-// Auth configuration - untuk server-side only
-// Jangan import file ini dari middleware!
+// Auth configuration for SERVER COMPONENTS only
+// DO NOT import this in middleware - use auth-edge.ts instead!
 
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";

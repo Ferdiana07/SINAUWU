@@ -1,30 +1,31 @@
 // Middleware auth - Edge Runtime compatible
-// Hanya menggunakan getToken dari next-auth/jwt
+// IMPORTANT: Do NOT import from auth-config.ts or auth.ts here!
+// Those files import Prisma which is NOT compatible with Edge Runtime
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
+export async function middleware(req: NextRequest) {
   const token = await getToken({
-    req: request,
+    req,
     secret: process.env.AUTH_SECRET,
   });
 
-  const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-  const isLogin = request.nextUrl.pathname.startsWith("/login");
-  const isRegister = request.nextUrl.pathname.startsWith("/register");
+  const pathname = req.nextUrl.pathname;
+  const isDashboard = pathname.startsWith("/dashboard");
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
 
   // Jika mengakses dashboard tanpa login, redirect ke login
   if (isDashboard && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // Jika sudah login dan mengakses login/register, redirect ke dashboard
-  if ((isLogin || isRegister) && token) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
