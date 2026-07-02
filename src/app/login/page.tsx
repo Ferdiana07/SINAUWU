@@ -50,10 +50,16 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
 
     try {
-      await signIn("google", {
+      const result = await signIn("google", {
         callbackUrl: "/dashboard",
-        redirect: true,
+        redirect: false,
       });
+
+      if (result?.url) {
+        window.location.href = result.url;
+      } else {
+        router.push("/dashboard");
+      }
     } catch {
       setError("Terjadi kesalahan. Silakan coba lagi.");
       setIsGoogleLoading(false);
