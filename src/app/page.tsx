@@ -174,8 +174,8 @@ export default function HomePage() {
                   <Brain className="w-8 h-8 text-white" />
                 </div>
 
-                <div className="absolute top-24 left-8 w-16 h-16 bg-gradient-to-br from-indigo-400 to-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-float" style={{ animationDelay: "1s" }}>
-                  <FileText className="w-7 h-7 text-white m-auto" />
+                <div className="absolute top-24 left-8 w-16 h-16 bg-gradient-to-br from-indigo-400 to-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-float flex items-center justify-center" style={{ animationDelay: "1s" }}>
+                  <FileText className="w-7 h-7 text-white" />
                 </div>
 
                 {/* Decorative circles */}
@@ -376,11 +376,11 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
                 Dirancang untuk
                 <br />
-                <span className="text-gradient-hero">mahasiswa</span> Indonesia
+                <span className="text-gradient-hero">siswa</span> Indonesia
               </h2>
 
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                Kita tahu betapa sibuknya hidup mahasiswa. Tuntutan akademik yang tinggi,
+                Kita tahu betapa sibuknya hidup siswa. Tuntutan akademik yang tinggi,
                 materi yang banyak, dan waktu yang sedikit.
               </p>
 
@@ -470,10 +470,6 @@ export default function HomePage() {
                 Powered by AI
               </span>
             </div>
-          </div>
-
-          <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground">
-            Built with ❤️ for Indonesian students
           </div>
         </div>
       </footer>
