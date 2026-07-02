@@ -211,21 +211,28 @@ GOOGLE_CLIENT_SECRET="GOCSPX-xxxxx"
 
 ### Landing Page
 Halaman landing yang modern dan responsive dengan highlight fitur dan tombol call-to-action.
+<img width="1917" height="913" alt="Screenshot 2026-07-02 203515" src="https://github.com/user-attachments/assets/495fb5fb-9b28-4161-bb6f-6d96e49a455f" />
 
 ### Dashboard
 Dashboard yang bersih menampilkan:
 - Kartu statistik
 - Dokumen terbaru
 - Aksi cepat
+<img width="1917" height="911" alt="dashboard" src="https://github.com/user-attachments/assets/e836f5f1-b7b8-4850-a959-51da33574150" />
+
 
 ### Interface Kuis
 Kuis interaktif dengan:
 - Indikator progress
 - Opsi pilihan ganda
 - Feedback instan
+<img width="1917" height="910" alt="quiz" src="https://github.com/user-attachments/assets/3b2df261-3b3f-4e90-9a9c-d6e92b6aac9e" />
+
 
 ### Mode Flashcard
 Interface kartu flip untuk belajar dengan kontrol navigasi.
+<img width="1917" height="910" alt="flashcard" src="https://github.com/user-attachments/assets/7cc1afd8-4e06-4740-b10a-d115314b0aa6" />
+
 
 ## 🔒 Fitur Keamanan
 
